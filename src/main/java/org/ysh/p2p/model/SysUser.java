@@ -2,11 +2,15 @@ package org.ysh.p2p.model;
 
 import java.util.Date;
 
+import org.ysh.p2p.annotation.Column;
+import org.ysh.p2p.annotation.Table;
+
 /**
  * 使用管理系统的操作人员
  * @author yshin1992
  *
  */
+@Table(name="sys_user")
 public class SysUser extends BaseModel {
 
 	private static final long serialVersionUID = -2807814650096629711L;
@@ -14,31 +18,37 @@ public class SysUser extends BaseModel {
 	/**
 	 * 用户账户（登录名）
 	 */
+	@Column(name="userCd")
 	private String userCd;
 	
 	/**
 	 * 经过加密算法后的密码
 	 */
+	@Column(name="password")
 	private String password;
 	
 	/**
 	 * 电子邮件地址
 	 */
+	@Column(name="email")
 	private String email;
 	
 	/**
 	 * 上次登录的IP
 	 */
+	@Column(name="lastLoginIp")
 	private String lastLoginIp;
 	
 	/**
 	 * 上次登录的时间
 	 */
+	@Column(name="lastLoginTime")
 	private Date lastLoginTime;
 	
 	/**
 	 * 登录次数
 	 */
+	@Column(name="loginCounts")
 	private long loginCounts = 0;
 	
 	/**
@@ -46,6 +56,7 @@ public class SysUser extends BaseModel {
 	 * 0 非管理员
 	 * 1 管理员
 	 */
+	@Column(name="isAdmin")
 	private Integer isAdmin = 0;
 
 	public String getUserCd() {

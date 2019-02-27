@@ -7,31 +7,62 @@ import java.util.List;
 
 public class ReflectionUtil {
 	
-	public static <T> List<Field> getClassFields(Class<T> clazz){
+	public static List<Field> getClassFields(Class<?> clazz){
 		List<Field> result = new ArrayList<Field>();
 		
-		Field[] fields = clazz.getDeclaredFields();
-		
-		for(Field f : fields){
-			if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers())){
-				continue;
-			}
-			result.add(f);
-		}
-		
-		Class<?> superClass = clazz.getSuperclass();
-		while(superClass != Object.class){
-			Field[] superFields = superClass.getDeclaredFields();
-			for(Field f : superFields){
+		for(;clazz != Object.class;clazz = clazz.getSuperclass()){
+			Field[] fields = clazz.getDeclaredFields();
+			
+			for(Field f : fields){
 				if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers())){
 					continue;
 				}
 				result.add(f);
 			}
-			superClass = superClass.getSuperclass();
+		}
+		return result;
+	}
+	
+	public static Field getDeclaredField(String fieldName,Class<?> clazz){
+		Field field = null;
+		
+		for(;clazz != Object.class;clazz = clazz.getSuperclass()){
+			try{
+				field = clazz.getDeclaredField(fieldName);
+			}catch(Exception e){
+				//什么也不做
+			}
+		}
+		return field;
+	}
+	
+	
+	public static <T> void setFieldValue(String fieldName,Object value,Class<T> clazz,T t){
+		Field field = getDeclaredField(fieldName,clazz);
+		field.setAccessible(true);
+		
+		try {
+			field.set(t, value);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		
-		return result;
+	}
+	
+	public static <T> Object getFieldValue(String fieldName,Class<T> clazz,T t){
+		Field field = getDeclaredField(fieldName,clazz);
+		field.setAccessible(true);
+		
+		try {
+			return field.get(t);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

@@ -3,9 +3,9 @@ package org.ysh.p2p.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.enums.Status;
 import org.ysh.p2p.util.DateUtil;
-import org.ysh.p2p.util.StringUtil;
 
 /**
  * 基础数据模型
@@ -20,22 +20,34 @@ public abstract class BaseModel implements Serializable{
 	/**
 	 * 主体ID
 	 */
-	private String uuid = StringUtil.generateUuid();
+	@Column(name = "uuid")
+	private String uuid;
 	
 	/**
 	 * 创建时间
 	 */
-	private Date createTime = new Date();
+	@Column(name = "createTime")
+	private Date createTime;
 	
 	/**
 	 * 更新时间
 	 */
+	@Column(name = "updateTime")
 	private Date updateTime;
 	
 	/**
 	 * 状态：默认为正常
 	 */
+	@Column(name = "status")
 	private Integer status = 0;
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
 	public String getUuid() {
 		return uuid;

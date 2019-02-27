@@ -1,14 +1,13 @@
 package org.ysh.p2p.dao;
 
-import java.sql.SQLException;
 
-public abstract class AbstractDao<T> {
+public interface AbstractDao<T> {
 	
-	public abstract void add(T t) throws SQLException;
+	public void add(T t,Class<T> clazz) throws Exception;
 	
-	public abstract T delete(T t) throws SQLException;
+	public void deleteByUuid(T t,Class<T> clazz) throws Exception;
 	
-	public abstract T update(T t) throws SQLException;
+	public void update(T t,Class<T> clazz) throws Exception;
 	
-	public abstract T query(T t) throws SQLException;
+	public T query(T t,Class<T> clazz) throws Exception;
 }
