@@ -1,4 +1,4 @@
-package org.ysh.p2p.controller;
+package org.ysh.p2p.view;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
