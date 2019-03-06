@@ -2,10 +2,33 @@ package org.ysh.p2p.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Random;
 import java.util.UUID;
 
 public final class StringUtil {
 
+	private static final char[] CHARS = {
+		'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+		'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+		'0','1','2','3','4','5','6','7','8','9'
+	};
+	
+	/**
+	 * 生成指定长度的验证码
+	 * @param length
+	 * @return
+	 */
+	public static final String generateVerifyCode(int length){
+		StringBuilder result = new StringBuilder(length);
+		Random r = new Random();
+		for(int i = 0;i<length;i++){
+			result.append(CHARS[r.nextInt(CHARS.length)]);
+		}
+		return result.toString();
+	}
+	
+	
 	/**
 	 * 生成UUID
 	 * @return
@@ -20,11 +43,36 @@ public final class StringUtil {
 	 * @param str
 	 * @return
 	 */
-	public static boolean isNotEmpty(String str){
-		if(null != str && str.trim().length() > 0){
-			return true;
+	public static boolean isNotEmpty(Object obj){
+		if(null == obj){
+			return false;
 		}
-		return false;
+		
+		/**
+		 * 字符串
+		 */
+		if(obj instanceof String){
+			String str = (String)obj;
+			if(str.trim().length() == 0){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		
+		/**
+		 * 集合
+		 */
+		if(obj instanceof Collection){
+			Collection<?> collection = (Collection<?>)obj;
+			return !collection.isEmpty();
+		}
+		
+		return true;
+	}
+	
+	public static boolean isEmpty(Object obj){
+		return !isNotEmpty(obj);
 	}
 	
 	/**

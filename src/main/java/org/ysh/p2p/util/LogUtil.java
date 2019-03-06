@@ -9,6 +9,10 @@ import java.util.logging.Logger;
  */
 public class LogUtil {
 	
+	static{
+		System.setProperty("java.util.logging.config.file",LogUtil.class.getClass().getResource("/")+"logging.properties");
+	}
+	
 	public static Logger getLogger(Object obj){
 		return Logger.getLogger(obj.getClass().getName());
 	}
