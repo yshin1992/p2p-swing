@@ -5,6 +5,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ysh.p2p.annotation.Transient;
+
 public class ReflectionUtil {
 	
 	public static List<Field> getClassFields(Class<?> clazz){
@@ -17,6 +19,10 @@ public class ReflectionUtil {
 				if(Modifier.isStatic(f.getModifiers()) || Modifier.isFinal(f.getModifiers())){
 					continue;
 				}
+				
+				Transient trans = f.getAnnotation(Transient.class);
+				if(trans != null)
+					continue;
 				result.add(f);
 			}
 		}
