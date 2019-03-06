@@ -87,7 +87,7 @@ public abstract class BaseModel implements Serializable{
 
 	@Override
 	public String toString() {
-		return "BaseModel [uuid=" + uuid + ", createTime=" + getCreateTimeStr()
+		return "[uuid=" + uuid + ", createTime=" + getCreateTimeStr()
 				+ ", updateTime=" + getUpdateTimeStr() + ", status=" + status + "]";
 	}
 	
