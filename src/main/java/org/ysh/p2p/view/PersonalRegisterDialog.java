@@ -1,32 +1,50 @@
 package org.ysh.p2p.view;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import org.ysh.p2p.model.Member;
+import org.ysh.p2p.service.MemberService;
+import org.ysh.p2p.service.SystemStartupService;
+import org.ysh.p2p.service.impl.MemberServiceImpl;
+import org.ysh.p2p.service.impl.SystemStartupServiceImpl;
+import org.ysh.p2p.session.Session;
 import org.ysh.p2p.util.StringUtil;
+import org.ysh.p2p.vo.ResponseMsg;
 
 /**
  * 个人注册对话框
  * @author yshin1992
  *
  */
-public class PersonalRegisterDialog extends JFrame {
+public class PersonalRegisterDialog extends JDialog {
 	
 	private static final long serialVersionUID = -4163092179676398742L;
 
+	private MemberService memberService = new MemberServiceImpl();
+	
 	private JTextField nickNameField,phoneField,emailField,verifyField,vfCodeField,invField;
 	
 	private JPasswordField pswdField,confirmField;
 	
 	private JButton vfBtn,codeBtn,registBtn,cancelBtn;
 	
-	public PersonalRegisterDialog(){
+	private String verify;
+	
+	private String vfCode;
+	
+	public PersonalRegisterDialog(JFrame owner){
+		super(owner,true);
 		
 		JPanel panel = new JPanel(null);
 		
@@ -73,7 +91,9 @@ public class PersonalRegisterDialog extends JFrame {
 		JPanel tmp1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		verifyField = new JTextField(5);
 		tmp1.add(verifyField);
-		vfBtn = new JButton(StringUtil.generateVerifyCode(4));
+		
+		verify=StringUtil.generateVerifyCode(4);
+		vfBtn = new JButton(verify);
 		tmp1.add(vfBtn);
 		tmp1.setBounds(110,235,240,35);
 		panel.add(tmp1);
@@ -100,22 +120,77 @@ public class PersonalRegisterDialog extends JFrame {
 		
 		registBtn = new JButton("注册");
 		registBtn.setBounds(50,380,100,35);
+		registBtn.addActionListener(new RegistActionListener());
 		panel.add(registBtn);
 		
 		cancelBtn = new JButton("取消");
 		cancelBtn.setBounds(200,380,100,35);
+		cancelBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				PersonalRegisterDialog.this.dispose();
+			}
+		});
 		panel.add(cancelBtn);
 		
 		this.add(panel);
 		this.setSize(350,500);
 		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 	
 	
+	private class RegistActionListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			String nickNm = nickNameField.getText().trim();
+			String phone = phoneField.getText().trim();
+			
+			String email = emailField.getText().trim();
+			String password = new String(pswdField.getPassword());
+			String confirmPswd = new String(confirmField.getPassword());
+			if(!password.equals(confirmPswd)){
+				JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  "两次密码输入不一致!","提示",JOptionPane.CLOSED_OPTION);
+				return;
+			}
+			
+			String verifyInput= verifyField.getText().trim();
+			if(!verifyInput.equalsIgnoreCase(verify)){
+				JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  "图形验证码错误!","提示",JOptionPane.CLOSED_OPTION);
+				return;
+			}
+			
+			String inv = invField.getText().trim();
+			
+			Member member = new Member();
+			member.setNickName(nickNm);
+			member.setPhone(phone);
+			member.setPassword(password);
+			member.setEmail(email);
+			member.setPromotionId(inv);
+			try {
+				ResponseMsg<Member> msg = memberService.register(member);
+				if(msg.getCode() != ResponseMsg.SUCCESS_CODE){
+					JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  msg.getData(),"提示",JOptionPane.CLOSED_OPTION);
+					return;
+				}else{
+					JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  "注册成功!","提示",JOptionPane.CLOSED_OPTION);
+					Session.getInstance().setLoginMember(msg.getData());
+					PersonalRegisterDialog.this.dispose();
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new PersonalRegisterDialog();
+		SystemStartupService startupService = new SystemStartupServiceImpl();
+		startupService.start();	
 	}
 
 }

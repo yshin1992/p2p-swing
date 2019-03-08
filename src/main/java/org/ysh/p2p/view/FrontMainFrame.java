@@ -15,6 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.ysh.p2p.service.SystemStartupService;
+import org.ysh.p2p.service.impl.SystemStartupServiceImpl;
+import org.ysh.p2p.session.Session;
+
 public class FrontMainFrame extends JFrame {
 
 	/**
@@ -39,6 +43,9 @@ public class FrontMainFrame extends JFrame {
 	}
 	
 	public static void main(String[] args) {
+		
+		SystemStartupService startupService = new SystemStartupServiceImpl();
+		startupService.start();	
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
@@ -74,8 +81,7 @@ public class FrontMainFrame extends JFrame {
 			loginLabel.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					
+					new MemberLoginDialog(FrontMainFrame.this);
 				}
 			});
 			
@@ -85,8 +91,11 @@ public class FrontMainFrame extends JFrame {
 			personalLabel.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
+					new PersonalRegisterDialog(FrontMainFrame.this); 
 					
+					//登录完成之后切换面板
+					
+					//TODO
 				}
 			});
 			
