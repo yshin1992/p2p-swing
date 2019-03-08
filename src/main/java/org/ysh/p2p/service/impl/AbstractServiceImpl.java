@@ -1,8 +1,9 @@
 package org.ysh.p2p.service.impl;
 
+import org.ysh.p2p.model.BaseModel;
 import org.ysh.p2p.service.AbstractService;
 
-public abstract class AbstractServiceImpl<T> implements AbstractService<T> {
+public abstract class AbstractServiceImpl<T extends BaseModel> implements AbstractService<T> {
 
 	public void add(T t, Class<T> clazz) {
 		try {
@@ -31,6 +32,15 @@ public abstract class AbstractServiceImpl<T> implements AbstractService<T> {
 	public T query(T t, Class<T> clazz) {
 		try {
 			return getDao().query(t, clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public T findByUuid(String uuid,Class<T> clazz){
+		try {
+			return getDao().findByUuid(uuid	, clazz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
