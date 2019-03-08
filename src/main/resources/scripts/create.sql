@@ -58,7 +58,7 @@ CREATE TABLE `memberintegral` (
 /** 会员信息汇总表 **/
 CREATE TABLE `user_summary` (
   `uuid` varchar(32) NOT NULL,
-  `member` varchar(32) NOT NULL,
+  `memberId` varchar(32) NOT NULL,
   `createTime` datetime DEFAULT NULL,
   `updateTime` datetime DEFAULT NULL,
   `version` int(11) DEFAULT NULL,
@@ -90,6 +90,7 @@ CREATE TABLE `user_summary` (
   `amountRecharge` decimal(19,2) DEFAULT NULL,
   `amountRechargeRow` int(11) DEFAULT NULL,
   `investIntegral` decimal(19,2) DEFAULT NULL,
+  `status` int(11),
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
