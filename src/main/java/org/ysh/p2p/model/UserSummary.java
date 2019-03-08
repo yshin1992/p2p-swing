@@ -6,6 +6,7 @@ import java.util.Date;
 import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.annotation.Table;
 import org.ysh.p2p.annotation.Transient;
+import org.ysh.p2p.util.StringUtil;
 
 @Table(name="user_summary")
 public class UserSummary extends BaseModel{
@@ -175,6 +176,7 @@ public class UserSummary extends BaseModel{
 	 * @param saveMember 注册时被保存的会员
 	 */
 	public UserSummary(String memberId) {
+		this.setUuid(StringUtil.generateUuid());
 		this.setMemberId(memberId);
 		this.setAmountAward(BigDecimal.ZERO);
 		this.setAmountAwardInvest(BigDecimal.ZERO);
