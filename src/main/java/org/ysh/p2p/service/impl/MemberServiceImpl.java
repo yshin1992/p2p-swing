@@ -11,7 +11,10 @@ import org.ysh.p2p.model.Member;
 import org.ysh.p2p.model.UserSummary;
 import org.ysh.p2p.service.MemberService;
 import org.ysh.p2p.support.ApplicationContext;
+import org.ysh.p2p.support.LoginSuccessEvent;
 import org.ysh.p2p.support.RegisterSuccessEvent;
+import org.ysh.p2p.util.DateUtil;
+import org.ysh.p2p.util.IPAddressUtil;
 import org.ysh.p2p.util.LogUtil;
 import org.ysh.p2p.util.StringUtil;
 import org.ysh.p2p.vo.ResponseMsg;
@@ -86,6 +89,7 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 			member.setUpdateTime(new Date());
 			member.setRegistTime(new Date());
 			member.setLoginCount(0);
+			member.setStatus(Member.MEMBER_STATUS_NORMAL);
 			member.setAuditType(8);
 			member.setPassword(StringUtil.getMd5(StringUtil.getMd5(member.getPassword())+ member.getRealCd()));//对密码进行加密
 			
@@ -107,6 +111,51 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 		ctx.publishEvent(new RegisterSuccessEvent<String>(member.getUuid()));
 		
 		respMsg.setData(member);
+		return respMsg;
+	}
+
+
+	public ResponseMsg<Member> login(Member member) throws Exception {
+		ResponseMsg<Member> respMsg = new ResponseMsg<Member>();
+		String pswd = member.getPassword();
+		member.setPassword(null);
+		member.setStatus(null);
+		Member loginMember = memberDao.query(member, Member.class);
+		if(loginMember != null){
+			
+			if(loginMember.getStatus() == Member.MEMBER_STATUS_LIMIT){
+				respMsg.failure(null,"对不起，该用户已被限制登录!");
+				return respMsg;
+			}
+			
+			//校验密码
+			String encryptPswd = StringUtil.getMd5(StringUtil.getMd5(pswd) + member.getRealCd());
+			Member validateMember = new Member();
+			validateMember.setPassword(encryptPswd);
+			validateMember.setPhone(member.getPhone());
+			loginMember = memberDao.query(member, Member.class);
+			if(loginMember == null){
+				respMsg.failure(null,"手机号或密码错误!");
+				return respMsg;
+			}
+			
+			Date currentLoginTime = new Date();
+			Date lastLoginTime = member.getLastLogin();
+			//设置上一次登录时间、ip
+			loginMember.setLastLogin(currentLoginTime);
+			loginMember.setLastLoginFrom(currentLoginTime);
+			loginMember.setLastLoginIp(IPAddressUtil.getLocalAvailableIP());
+			loginMember.setLoginCount(loginMember.getLoginCount() == null? 1 : loginMember.getLoginCount()+1);
+			memberDao.update(loginMember, Member.class);
+			
+			respMsg.setData(loginMember);
+			
+			//发布登录成功事件
+			ctx.publishEvent(new LoginSuccessEvent(loginMember.getUuid(), DateUtil.isFirstLoginInToday(lastLoginTime, currentLoginTime)));
+		}else{
+			respMsg.failure(null,"手机号或密码错误");
+		}
+		
 		return respMsg;
 	}
 

@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 
 import org.ysh.p2p.service.SystemStartupService;
 import org.ysh.p2p.service.impl.SystemStartupServiceImpl;
-import org.ysh.p2p.session.Session;
 
 public class FrontMainFrame extends JFrame {
 
@@ -81,6 +80,7 @@ public class FrontMainFrame extends JFrame {
 			loginLabel.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
+					System.out.println("登录");
 					new MemberLoginDialog(FrontMainFrame.this);
 				}
 			});

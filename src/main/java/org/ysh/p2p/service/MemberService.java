@@ -7,4 +7,5 @@ public interface MemberService extends AbstractService<Member> {
 
 	public ResponseMsg<Member> register(Member member)  throws Exception;
 	
+	public ResponseMsg<Member> login(Member member) throws Exception;
 }

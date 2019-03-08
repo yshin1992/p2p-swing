@@ -24,6 +24,14 @@ public class Member extends BaseModel{
 	
 	public static final Integer MEMBER_KIND_ENTERPRISE = 1;
 	
+	/***
+	 * 0：限制登录
+	 */
+	public static final Integer MEMBER_STATUS_LIMIT = 0;
+	/***
+	 * 1：正常状态
+	 */
+	public static final Integer MEMBER_STATUS_NORMAL = 1;
 	
 	@Column(name="memberKind")
 	private Integer memberKind;// 客户类型0:个人，1:企业

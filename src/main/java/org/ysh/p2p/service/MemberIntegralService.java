@@ -16,4 +16,11 @@ public interface MemberIntegralService extends AbstractService<MemberIntegral> {
 	 * @param memberId
 	 */
 	public void registerGiveIntegral(String memberId);
+	
+	/**
+	 * 每日首次登录获得积分
+	 * @param memberId
+	 * @param isFirstLoginInToday
+	 */
+	public void loginGiveIntegral(String memberId, boolean isFirstLoginInToday);
 }

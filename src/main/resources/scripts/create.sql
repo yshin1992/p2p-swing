@@ -119,3 +119,4 @@ create table zsaccount(
 `businessProperty` int(11) DEFAULT NULL,
 `bankName` varchar(255) DEFAULT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

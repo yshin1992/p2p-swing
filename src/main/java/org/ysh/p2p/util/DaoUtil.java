@@ -147,12 +147,80 @@ public class DaoUtil {
 				paramList.add(val);
 			}
 		}
-		
 		return queryForObject(sql.toString(),paramList.toArray(), clazz);
 				
 	}
 	
+	public <T> List<T> queryForList(T t,Class<T> clazz) throws Exception{
+		Table tab = clazz.getAnnotation(Table.class);
+		StringBuilder sql = new StringBuilder("select * from ").append(tab.name()).append(" where 1=1 ");
+		
+		List<Object> paramList = new ArrayList<Object>();
+		List<Field> fields = ReflectionUtil.getClassFields(clazz);
+		
+		for(Field f : fields){
+			Object val = ReflectionUtil.getFieldValue(f.getName(), clazz, t);
+			if(null != val){
+				//从注解中获取数据库中对应的字段名
+				Column col = f.getAnnotation(Column.class);
+				sql.append("and ").append(col.name()).append("=? ");
+				paramList.add(val);
+			}
+		}
+		return queryForList(sql.toString(),paramList.toArray(), clazz);
+				
+	}
+	
+	public <T> List<T> queryForList(String sql,Object[] params,Class<T> clazz) throws Exception{
+		Log.warning("SQL-->" + sql.toString());
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		
+		List<T> resultList = new ArrayList<T>();
+		try {
+			conn=getConnection();
+			
+			pstm =conn.prepareStatement(sql);
+			
+			if(null != params && params.length > 0){
+				for(int i=0;i<params.length;i++){
+					pstm.setObject(i+1, params[i]);
+				}
+			}
+			
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				T t = clazz.newInstance();
+				List<Field> fields = ReflectionUtil.getClassFields(clazz);
+				
+				for(Field f : fields){
+					//从注解中获取数据库中对应的字段名
+					Column col = f.getAnnotation(Column.class);
+					if(null != col){
+						ReflectionUtil.setFieldValue(f.getName(), rs.getObject(col.name()), clazz, t);
+					}
+				}
+				
+				resultList.add(t);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			throw e;
+		} finally{
+			closeResultSet(rs);
+			closeStatement(pstm);
+			closeConnection(conn);
+		}
+		
+		return resultList;
+	}
+	
+	
 	public <T> T queryForObject(String sql,Object[] params,Class<T> clazz) throws Exception{
+		Log.warning("SQL-->" + sql.toString());
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;

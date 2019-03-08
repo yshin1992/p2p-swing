@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.ysh.p2p.support.listener.ApplicationListener;
 import org.ysh.p2p.util.LogUtil;
@@ -19,6 +21,8 @@ public class ApplicationContext {
 	
 	private static final ApplicationContext cxt = new ApplicationContext();
 	
+	private static final ExecutorService ThreadPool = Executors.newCachedThreadPool();
+	
 	private ApplicationContext(){
 		
 	}
@@ -28,11 +32,17 @@ public class ApplicationContext {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void publishEvent(EventObject event){
+	public void publishEvent(final EventObject event){
 		Set<ApplicationListener<? extends EventObject>> listeners = this.getApplicationListeners(event);
 		if(!listeners.isEmpty()){
-			for(ApplicationListener listener:listeners){
-				listener.onApplicationEvent(event);
+			for(final ApplicationListener listener:listeners){
+				ThreadPool.execute(new Runnable() {
+					
+					public void run() {
+						listener.onApplicationEvent(event);
+					}
+				});
+				
 			}
 		}
 	}

@@ -82,4 +82,17 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 		
 	}
 
+	public void loginGiveIntegral(String memberId, boolean isFirstLoginInToday) {
+		//未开启积分设置
+		if(!checkIsUseIntegral()){
+			return;
+		}
+		
+		try{
+			//TODO
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 }
