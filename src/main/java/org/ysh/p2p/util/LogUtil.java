@@ -10,11 +10,19 @@ import java.util.logging.Logger;
 public class LogUtil {
 	
 	static{
-		System.setProperty("java.util.logging.config.file",LogUtil.class.getClass().getResource("/")+"logging.properties");
+		String logFilePath = LogUtil.class.getClass().getResource("/").toString()+"logging.properties";
+		System.setProperty("java.util.logging.config.file",logFilePath.replace("file:", ""));
 	}
 	
 	public static Logger getLogger(Object obj){
 		return Logger.getLogger(obj.getClass().getName());
 	}
 	
+	public static void main(String[] args) {
+		Logger logger = LogUtil.getLogger("com.oo");
+		logger.fine("Hello");
+		logger.info("Hello");
+		logger.warning("Hello");
+		System.out.println(LogUtil.class.getClass().getResource("/").toString()+"logging.properties");
+	}
 }

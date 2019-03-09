@@ -2,18 +2,22 @@ package org.ysh.p2p.util;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
 
 import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.annotation.Table;
+
+import com.mchange.v2.c3p0.DataSources;
+import com.mchange.v2.c3p0.PooledDataSource;
 
 /**
  * Dao工具类
@@ -25,29 +29,16 @@ public class DaoUtil {
 
 	private static final Logger Log = Logger.getLogger(DaoUtil.class.getName());
 	
-	private static final ResourceBundle bundle = ResourceBundle.getBundle("jdbc");
-	/**
-	 * 连接Mysql的驱动类
-	 */
-	private static final String DRIVER_CLASS;
+	private static DataSource ds;
 	
-	/**
-	 * 连接的数据库地址
-	 */
-	private static final String DATABASE_URL;
-	
-	/**
-	 * 数据库的用户名和密码
-	 */
-	private static final String DATABASE_USERNAME;
-	private static final String DATABASE_PASSWORD ;
+	private static final String JDBC_DRIVER = "driverClass";
+
+	private static final String JDBC_URL = "jdbcUrl";
 	
 	static{
-		DRIVER_CLASS = bundle.getString("db.driverClass");
-		DATABASE_URL = bundle.getString("db.connectUrl");
-		DATABASE_USERNAME = bundle.getString("db.username");
-		DATABASE_PASSWORD = bundle.getString("db.password");
+		
 	}
+	
 	
 	/**
 	 * 使用单例模式
@@ -59,20 +50,71 @@ public class DaoUtil {
 	 * 用于加载数据库连接驱动类
 	 */
 	private DaoUtil(){
+	}
+
+	static{
+		initDBSource();
+	}
+	
+	/**
+	 * 初始化c3p0连接池
+	 */
+	private static final void initDBSource() {
+		Properties c3p0Pro = new Properties();
 		try {
-			Class.forName(DRIVER_CLASS);
-		} catch (ClassNotFoundException e) {
-			Log.warning("加载数据库驱动失败!");
+			// 加载配置文件
+			c3p0Pro.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("jdbc.properties"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String drverClass = c3p0Pro.getProperty(JDBC_DRIVER);
+		if (drverClass != null) {
+			try {
+				// 加载驱动类
+				Class.forName(drverClass);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		Properties jdbcpropes = new Properties();
+		Properties c3propes = new Properties();
+		for (Object key : c3p0Pro.keySet()) {
+			String skey = (String) key;
+			if (skey.startsWith("c3p0.")) {
+				c3propes.put(skey, c3p0Pro.getProperty(skey));
+			} else {
+				jdbcpropes.put(skey, c3p0Pro.getProperty(skey));
+			}
+		}
+
+		try {
+			// 建立连接池
+			DataSource unPooled = DataSources.unpooledDataSource(c3p0Pro.getProperty(JDBC_URL), jdbcpropes);
+			ds = DataSources.pooledDataSource(unPooled, c3propes);
+			Log.warning("空闲的连接: " + ((PooledDataSource) ds).getNumIdleConnectionsDefaultUser());
+			Log.warning("使用中的连接: " + ((PooledDataSource) ds).getNumBusyConnectionsDefaultUser());
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
 	/**
 	 * 获取DaoUitl的实例化对象
 	 * @return
 	 */
 	public static DaoUtil getInstance(){
 		return instance;
+	}
+	
+	/**
+	 * 获取池化的dataSource对象
+	 * 
+	 * @return
+	 */
+	public static DataSource getDataSource() {
+		return ds;
 	}
 	
 	/**
@@ -83,7 +125,18 @@ public class DaoUtil {
 	public Connection getConnection() throws SQLException
 	{
 		Log.info("获取数据库连接");
-		return DriverManager.getConnection(DATABASE_URL,DATABASE_USERNAME,DATABASE_PASSWORD);
+		final Connection conn = ds.getConnection();
+		conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+		return conn;
+	}
+	
+	public static void closeDataSource(DataSource ds) {
+		try {
+			((PooledDataSource) ds).close();
+			Log.info("释放连接池");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

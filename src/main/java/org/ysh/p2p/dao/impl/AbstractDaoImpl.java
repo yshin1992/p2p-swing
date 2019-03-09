@@ -28,6 +28,7 @@ public abstract class AbstractDaoImpl<T extends BaseModel> implements AbstractDa
 	public T findByUuid(String uuid, Class<T> clazz) throws Exception{
 		T instance = clazz.newInstance();
 		ReflectionUtil.setFieldValue("uuid", uuid, clazz, instance);
+		ReflectionUtil.setFieldValue("status", null, clazz, instance);
 		return this.query(instance, clazz);
 	}
 
