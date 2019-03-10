@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.foreground;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -94,6 +94,15 @@ public class PersonalRegisterDialog extends JDialog {
 		
 		verify=StringUtil.generateVerifyCode(4);
 		vfBtn = new JButton(verify);
+		vfBtn.setToolTipText("看不清？点击更换");
+		vfBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				verify = StringUtil.generateVerifyCode(4);
+				vfBtn.setText(verify);
+			}
+		});
 		tmp1.add(vfBtn);
 		tmp1.setBounds(110,235,240,35);
 		panel.add(tmp1);

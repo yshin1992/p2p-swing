@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.foreground;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;

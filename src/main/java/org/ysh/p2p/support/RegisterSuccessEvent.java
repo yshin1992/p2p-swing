@@ -7,7 +7,7 @@ import java.util.EventObject;
  * @author yshin1992
  *
  */
-public class RegisterSuccessEvent<T> extends EventObject {
+public class RegisterSuccessEvent extends EventObject {
 
 	/**
 	 * 
@@ -15,13 +15,8 @@ public class RegisterSuccessEvent<T> extends EventObject {
 	private static final long serialVersionUID = -3982177648695397624L;
 
 	
-	public RegisterSuccessEvent(T source) {
+	public RegisterSuccessEvent(String source) {
 		super(source);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public T getSource(){
-		return (T) super.getSource();
 	}
 
 }

@@ -1,7 +1,11 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.background;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -102,10 +106,39 @@ public class ProductPanel extends JPanel {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		JFrame frame = new JFrame();
-		frame.add(new ProductPanel());
+//		frame.add(new ProductPanel());
+		addComponentsToPane(frame.getContentPane());
 		frame.setSize(1366,700);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	
+	public static void addComponentsToPane(Container pane) {
+	    JPanel xPanel = new JPanel();
+	    xPanel.setLayout(new BoxLayout(xPanel, BoxLayout.X_AXIS));
+	    addButtons(xPanel);
+	    JPanel yPanel = new JPanel();
+	    yPanel.setLayout(new BoxLayout(yPanel, BoxLayout.Y_AXIS));
+	    addButtons(yPanel);
+	   
+	    pane.add(yPanel, BorderLayout.PAGE_START);
+	    pane.add(xPanel, BorderLayout.PAGE_END);
+	}
+	 
+	private static void addAButton(String text, Container container) {
+	    JButton button = new JButton(text);
+	    button.setAlignmentX(Component.LEFT_ALIGNMENT);
+	    container.add(button);
+	}
+	 
+	private static void addButtons(Container container) {
+	    addAButton("Button 1", container);
+	    addAButton("Button 2", container);
+	    addAButton("Button 3", container);
+	    addAButton("Long-Named Button 4", container);
+	    addAButton("5", container);
+	}
 
 }
+
+

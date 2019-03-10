@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
 
+import net.sf.json.JSONObject;
+
 public final class StringUtil {
 
 	private static final char[] CHARS = {
@@ -108,6 +110,10 @@ public final class StringUtil {
   
     }  
     
+    /**
+     * 生成短的UUID（8位）
+     * @return
+     */
     public static String generateShortUuid()
     {
       StringBuffer shortBuffer = new StringBuffer();
@@ -119,4 +125,15 @@ public final class StringUtil {
       }
       return shortBuffer.toString();
     }
+    
+    /**
+     * 将对象转换成JSON字符串
+     * @param obj
+     * @return
+     */
+    public static String generateJsonStr(Object obj){
+    	return JSONObject.fromObject(obj).toString();
+    }
+    
+    
 }

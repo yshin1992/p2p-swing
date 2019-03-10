@@ -108,7 +108,7 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 		//还有待做
 		//TODO
 		
-		ctx.publishEvent(new RegisterSuccessEvent<String>(member.getUuid()));
+		ctx.publishEvent(new RegisterSuccessEvent(member.getUuid()));
 		
 		respMsg.setData(member);
 		return respMsg;

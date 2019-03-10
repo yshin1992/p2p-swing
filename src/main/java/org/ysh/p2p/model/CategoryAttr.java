@@ -1,9 +1,10 @@
 package org.ysh.p2p.model;
 
 import org.ysh.p2p.annotation.Column;
+import org.ysh.p2p.annotation.Table;
 import org.ysh.p2p.annotation.Transient;
 
-
+@Table(name="categoryattr")
 public class CategoryAttr extends StaticModel {
 
 	/**

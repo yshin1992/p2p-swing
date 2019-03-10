@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.foreground;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

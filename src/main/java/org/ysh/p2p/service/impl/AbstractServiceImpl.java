@@ -1,9 +1,10 @@
 package org.ysh.p2p.service.impl;
 
-import org.ysh.p2p.model.BaseModel;
+import java.io.Serializable;
+
 import org.ysh.p2p.service.AbstractService;
 
-public abstract class AbstractServiceImpl<T extends BaseModel> implements AbstractService<T> {
+public abstract class AbstractServiceImpl<T extends Serializable> implements AbstractService<T> {
 
 	public void add(T t, Class<T> clazz) {
 		try {

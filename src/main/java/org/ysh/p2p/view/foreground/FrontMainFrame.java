@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.foreground;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 
 import org.ysh.p2p.service.SystemStartupService;
 import org.ysh.p2p.service.impl.SystemStartupServiceImpl;
+import org.ysh.p2p.util.ViewUtil;
 
 public class FrontMainFrame extends JFrame {
 

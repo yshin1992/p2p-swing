@@ -1,12 +1,13 @@
 package org.ysh.p2p.model;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 
 import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.util.DateUtil;
 
-public abstract class StaticModel extends BaseModel {
+public abstract class StaticModel implements Serializable {
 
 	/**
 	 * 
@@ -19,6 +20,9 @@ public abstract class StaticModel extends BaseModel {
 	
 	@Column(name="createBy")
 	private String createBy = "system";
+	
+	@Column(name="createTime")
+	private Date createTime;
 	
 	@Column(name="effTime")
 	private Date effTime;
@@ -93,6 +97,11 @@ public abstract class StaticModel extends BaseModel {
 		setExpTime(DateUtil.addYears(new Date(), 100));
 	}
 	
+	public boolean isEnabled(){
+		Date d1 = new Date();
+		return ("F0A".equals(this.state))&& (d1.after(this.effTime)) && (d1.before(this.expTime));
+	}
+	
 	public void disable(){
 		setEnable(false);
 		setStateTime(new Date());
@@ -116,4 +125,14 @@ public abstract class StaticModel extends BaseModel {
 		if (getState() == null) setEnable(true);
 		if (getListSort() == null) setListSort(Integer.valueOf(1));
 	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	
+	
 }

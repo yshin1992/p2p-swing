@@ -12,6 +12,6 @@ public interface CategoryAttrDao extends AbstractDao<CategoryAttr> {
 	
 	public abstract CategoryAttr findByAttrCd(String paramString);
 	
-	public abstract void updateCategoryAttr(String paramString1, String paramString2, String paramString3);
+	public abstract void updateCategoryAttr(String createBy, String actualVal, String attrId);
 	
 }

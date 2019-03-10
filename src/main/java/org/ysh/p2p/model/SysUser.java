@@ -49,7 +49,7 @@ public class SysUser extends BaseModel {
 	 * 登录次数
 	 */
 	@Column(name="loginCounts")
-	private long loginCounts = 0;
+	private Integer loginCounts = 0;
 	
 	/**
 	 * 是否为管理员
@@ -99,11 +99,11 @@ public class SysUser extends BaseModel {
 		this.lastLoginTime = lastLoginTime;
 	}
 
-	public long getLoginCounts() {
+	public Integer getLoginCounts() {
 		return loginCounts;
 	}
 
-	public void setLoginCounts(long loginCounts) {
+	public void setLoginCounts(Integer loginCounts) {
 		this.loginCounts = loginCounts;
 	}
 

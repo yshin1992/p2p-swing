@@ -11,12 +11,14 @@ import org.ysh.p2p.dao.CategoryAttrDao;
 import org.ysh.p2p.model.Category;
 import org.ysh.p2p.model.CategoryAttr;
 import org.ysh.p2p.util.DaoUtil;
+import org.ysh.p2p.util.LogUtil;
 
 public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implements CategoryAttrDao{
 	
 	public List<CategoryAttr> findByCategoryCd(String paramString) {
 		String SQL="select a.attrId,a.createBy,a.createTime,a.effTime,a.expTime,a.listSort,a.state,a.stateTime,a.actualval,a.attrCd,a.attrNm,a.attrRequired,a.defaultVal,a.remark,a.categoryId"
 				+ ",c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId and a.categoryId=(select categoryId from category where categoryCd=?)";
+		LogUtil.getLogger(this).warning(SQL + "[param = "+paramString +"]");
 		List<CategoryAttr> resultList = new ArrayList<CategoryAttr>();
 		try {
 			Connection conn = DaoUtil.getInstance().getConnection();
@@ -25,7 +27,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 			ResultSet rs = pstm.executeQuery();
 			while(rs.next()){
 				CategoryAttr attr = new CategoryAttr();
-				attr.setUuid(rs.getString(1));
+				attr.setAttrId(rs.getString(1));
 				attr.setCreateBy(rs.getString(2));
 				attr.setCreateTime(rs.getTimestamp(3));
 				attr.setEffTime(rs.getTimestamp(4));
@@ -42,7 +44,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 				attr.setCategoryId(rs.getString(15));
 				
 				Category category = new Category();
-				category.setUuid(rs.getString(16));
+				category.setCategoryId(rs.getString(16));
 				category.setCreateTime(rs.getTimestamp(17));
 				category.setCreateBy(rs.getString(18));
 				category.setEffTime(rs.getTimestamp(19));
@@ -71,6 +73,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 	public List<CategoryAttr> findByCategoryId(String paramString) {
 		String SQL="select a.attrId,a.createBy,a.createTime,a.effTime,a.expTime,a.listSort,a.state,a.stateTime,a.actualval,a.attrCd,a.attrNm,a.attrRequired,a.defaultVal,a.remark,a.categoryId"
 				+ ",c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId and a.categoryId=?";
+		LogUtil.getLogger(this).warning(SQL + "[param = "+paramString +"]");
 		List<CategoryAttr> resultList = new ArrayList<CategoryAttr>();
 		try {
 			Connection conn = DaoUtil.getInstance().getConnection();
@@ -79,7 +82,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 			ResultSet rs = pstm.executeQuery();
 			while(rs.next()){
 				CategoryAttr attr = new CategoryAttr();
-				attr.setUuid(rs.getString(1));
+				attr.setAttrId(rs.getString(1));
 				attr.setCreateBy(rs.getString(2));
 				attr.setCreateTime(rs.getTimestamp(3));
 				attr.setEffTime(rs.getTimestamp(4));
@@ -96,7 +99,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 				attr.setCategoryId(rs.getString(15));
 				
 				Category category = new Category();
-				category.setUuid(rs.getString(16));
+				category.setCategoryId(rs.getString(16));
 				category.setCreateTime(rs.getTimestamp(17));
 				category.setCreateBy(rs.getString(18));
 				category.setEffTime(rs.getTimestamp(19));
@@ -123,9 +126,11 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 	}
 
 	public CategoryAttr findByAttrCd(String paramString) {
+		
 		String SQL="select a.attrId,a.createBy,a.createTime,a.effTime,a.expTime,a.listSort,a.state,a.stateTime,a.actualval,a.attrCd,a.attrNm,a.attrRequired,a.defaultVal,a.remark,a.categoryId"
-				+ ",c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId and c.attrCd=?";
+				+ ",c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId and a.attrCd=?";
 		CategoryAttr attr = null;
+		LogUtil.getLogger(this).warning(SQL + "[param = "+paramString +"]");
 		try {
 			Connection conn = DaoUtil.getInstance().getConnection();
 			PreparedStatement pstm = conn.prepareStatement(SQL);
@@ -133,7 +138,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 			ResultSet rs = pstm.executeQuery();
 			while(rs.next()){
 				attr = new CategoryAttr();
-				attr.setUuid(rs.getString(1));
+				attr.setAttrId(rs.getString(1));
 				attr.setCreateBy(rs.getString(2));
 				attr.setCreateTime(rs.getTimestamp(3));
 				attr.setEffTime(rs.getTimestamp(4));
@@ -150,7 +155,7 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 				attr.setCategoryId(rs.getString(15));
 				
 				Category category = new Category();
-				category.setUuid(rs.getString(16));
+				category.setCategoryId(rs.getString(16));
 				category.setCreateTime(rs.getTimestamp(17));
 				category.setCreateBy(rs.getString(18));
 				category.setEffTime(rs.getTimestamp(19));
@@ -175,9 +180,15 @@ public class CategoryAttrDaoImpl extends AbstractDaoImpl<CategoryAttr> implement
 		return attr;
 	}
 
-	public void updateCategoryAttr(String paramString1, String paramString2,
-			String paramString3) {
-		
+	public void updateCategoryAttr(String createBy, String actualVal, String attrId) {
+		String SQL = "update categoryattr set createBy=?,actualVal=? where attrId=?";
+		LogUtil.getLogger(this).warning(SQL + "[param = "+createBy +"," +actualVal +","+ attrId +"]");
+		try {
+			DaoUtil.getInstance().update(SQL, new Object[]{createBy,actualVal,attrId});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+	
 
 }

@@ -21,6 +21,8 @@ public class SysUserServiceImpl extends AbstractServiceImpl<SysUser> implements
 		user.setUserCd(userCd);
 		user.setPassword(StringUtil.getMd5(StringUtil.getMd5(passwd) + userCd));
 		user.setIsAdmin(null);//屏蔽这个参数，因为用户在登录时不需要选择
+		user.setLoginCounts(null);
+		user.setStatus(null);
 		return this.query(user, SysUser.class);
 	}
 

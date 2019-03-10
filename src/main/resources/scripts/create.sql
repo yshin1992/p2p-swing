@@ -120,3 +120,20 @@ create table zsaccount(
 `bankName` varchar(255) DEFAULT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `sysoperationlog` (
+  `logId` varchar(32) NOT NULL,
+  `createBy` varchar(32) DEFAULT NULL,
+  `createTime` datetime DEFAULT NULL,
+  `operateContent` varchar(200) DEFAULT NULL,
+  `operateObj` varchar(32) DEFAULT NULL,
+  `operateObjName` varchar(200) DEFAULT NULL,
+  `operateObjType` varchar(32) DEFAULT NULL,
+  `operateTime` datetime DEFAULT NULL,
+  `operateType` int(11) DEFAULT NULL,
+  `operatorAccount` varchar(32) DEFAULT NULL,
+  `operatorId` varchar(32) DEFAULT NULL,
+  `operatorType` varchar(255) DEFAULT NULL,
+  `remark` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`logId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

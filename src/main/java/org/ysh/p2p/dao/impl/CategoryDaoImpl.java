@@ -18,10 +18,13 @@ public class CategoryDaoImpl extends AbstractDaoImpl<Category> implements Catego
 		List<Category> categoryList = new ArrayList<Category>();
 		String SQL="select a.attrId,a.createBy,a.createTime,a.effTime,a.expTime,a.listSort,a.state,a.stateTime,a.actualval,a.attrCd,a.attrNm,a.attrRequired,a.defaultVal,a.remark,a.categoryId,"
 				+ "c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId";
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
 		try {
-			Connection conn = DaoUtil.getInstance().getConnection();
-			PreparedStatement pstm = conn.prepareStatement(SQL);
-			ResultSet rs = pstm.executeQuery();
+			conn = DaoUtil.getInstance().getConnection();
+			pstm = conn.prepareStatement(SQL);
+			rs = pstm.executeQuery();
 			
 			Category tmp = null;
 			while(rs.next()){
@@ -69,6 +72,10 @@ public class CategoryDaoImpl extends AbstractDaoImpl<Category> implements Catego
 			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
+		} finally{
+			DaoUtil.getInstance().closeResultSet(rs);
+			DaoUtil.getInstance().closeStatement(pstm);
+			DaoUtil.getInstance().closeConnection(conn);
 		}
 		return categoryList;
 	}

@@ -18,6 +18,10 @@ public class LogUtil {
 		return Logger.getLogger(obj.getClass().getName());
 	}
 	
+	public static Logger getLogger(Class<?> clazz){
+		return Logger.getLogger(clazz.getName());
+	}
+	
 	public static void main(String[] args) {
 		Logger logger = LogUtil.getLogger("com.oo");
 		logger.fine("Hello");

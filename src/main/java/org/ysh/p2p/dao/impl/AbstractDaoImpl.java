@@ -1,13 +1,13 @@
 package org.ysh.p2p.dao.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.ysh.p2p.dao.AbstractDao;
-import org.ysh.p2p.model.BaseModel;
 import org.ysh.p2p.util.DaoUtil;
 import org.ysh.p2p.util.ReflectionUtil;
 
-public abstract class AbstractDaoImpl<T extends BaseModel> implements AbstractDao<T> {
+public abstract class AbstractDaoImpl<T extends Serializable> implements AbstractDao<T> {
 
 	public void add(T t, Class<T> clazz) throws Exception {
 		DaoUtil.getInstance().addObject(t, clazz);

@@ -1,9 +1,10 @@
 package org.ysh.p2p.service;
 
-import org.ysh.p2p.dao.AbstractDao;
-import org.ysh.p2p.model.BaseModel;
+import java.io.Serializable;
 
-public interface AbstractService<T extends BaseModel> {
+import org.ysh.p2p.dao.AbstractDao;
+
+public interface AbstractService<T extends Serializable> {
 	
 	public void add(T t,Class<T> clazz);
 	

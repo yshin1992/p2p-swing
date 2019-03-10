@@ -14,18 +14,18 @@ import org.ysh.p2p.util.LogUtil;
  *
  */
 @EventListener
-public class RegisterInfoListener implements ApplicationListener<RegisterSuccessEvent<String>> {
+public class RegisterInfoListener implements ApplicationListener<RegisterSuccessEvent> {
 
 	private MemberIntegralService memberIntegralService = new MemberIntegralServiceImpl();
 	
 	private Logger logger = LogUtil.getLogger(this);
 	
-	public void onApplicationEvent(RegisterSuccessEvent<String> event) {
+	public void onApplicationEvent(RegisterSuccessEvent event) {
 		logger.warning("会员注册成功后获得积分=====开始,memberId:"+ event.getSource());
 		try {
 			// 初始化会员积分总表记录
-			memberIntegralService.initMemberIntegral(event.getSource());
-			memberIntegralService.registerGiveIntegral(event.getSource());
+			memberIntegralService.initMemberIntegral((String)event.getSource());
+			memberIntegralService.registerGiveIntegral((String)event.getSource());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

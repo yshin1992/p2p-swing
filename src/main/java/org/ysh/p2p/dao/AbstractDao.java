@@ -1,11 +1,10 @@
 package org.ysh.p2p.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
-import org.ysh.p2p.model.BaseModel;
 
-
-public interface AbstractDao<T extends BaseModel> {
+public interface AbstractDao<T extends Serializable> {
 	
 	public void add(T t,Class<T> clazz) throws Exception;
 	

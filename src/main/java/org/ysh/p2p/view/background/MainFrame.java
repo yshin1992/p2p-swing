@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.background;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -21,11 +21,11 @@ public class MainFrame extends JFrame {
 	
 	public MainFrame(){
 		
-		/*LoginDialog loginDialog = new LoginDialog(this);
+		LoginDialog loginDialog = new LoginDialog(this);
 		
 		while(null == Session.getInstance().getLoginUser()){
 			loginDialog.setVisible(true);
-		}*/
+		}
 		this.initPane();
 		this.setSize(1366,700);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,8 +36,11 @@ public class MainFrame extends JFrame {
 		mainPane = new JTabbedPane();
 		mainPane.add("首页",new IndexPanel());
 		mainPane.add("项目管理",new ProductPanel());
-		
-		
+		mainPane.add("资金管理",new BankrollPanel());
+		mainPane.add("客户管理",new CustomerPanel());
+		mainPane.add("营销管理",new MarketPanel());
+		mainPane.add("内容管理",new CmsPanel());
+		mainPane.add("系统管理",new SystemMgrPanel());
 		
 		this.add(mainPane);
 	}

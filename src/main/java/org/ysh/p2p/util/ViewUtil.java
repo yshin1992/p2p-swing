@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.util;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

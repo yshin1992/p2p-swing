@@ -1,4 +1,4 @@
-package org.ysh.p2p.view;
+package org.ysh.p2p.view.background;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,6 +18,8 @@ import org.ysh.p2p.model.SysUser;
 import org.ysh.p2p.service.SysUserService;
 import org.ysh.p2p.service.impl.SysUserServiceImpl;
 import org.ysh.p2p.session.Session;
+import org.ysh.p2p.support.ApplicationContext;
+import org.ysh.p2p.support.SysUserLoginEvent;
 
 public class LoginDialog extends JDialog {
 
@@ -68,6 +70,7 @@ public class LoginDialog extends JDialog {
 				
 				if(null != user){
 					Session.getInstance().setLoginUser(user);
+					ApplicationContext.getApplicationContext().publishEvent(new SysUserLoginEvent(user));
 					LoginDialog.this.dispose();
 				}else{
 					JOptionPane.showConfirmDialog(LoginDialog.this, "用户名或密码错误!","提示",JOptionPane.CLOSED_OPTION);
