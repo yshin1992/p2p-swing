@@ -1,11 +1,13 @@
 package org.ysh.p2p.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.annotation.Table;
 import org.ysh.p2p.annotation.Transient;
+import org.ysh.p2p.util.DateUtil;
 
 /**
  * 会员信息表
@@ -313,7 +315,23 @@ public class Member extends BaseModel{
 	public void setMemberIdZ(String memberIdZ) {
 		this.memberIdZ = memberIdZ;
 	}
+	
+	public String getRegistTimeStr(){
+		if(this.registTime == null){
+			return "null";
+		}
+		return DateUtil.defaultFormat(this.registTime);
+	}
 
+	public String getLastLoginFormat() {
+		if (lastLogin != null) {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastLogin);
+		} else {
+			return "";
+		}
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Member [memberKind=" + memberKind + ", realCd=" + realCd

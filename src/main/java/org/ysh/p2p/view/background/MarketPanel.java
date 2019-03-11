@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -25,6 +26,7 @@ import org.ysh.p2p.enums.CategoryAttrEnum;
 import org.ysh.p2p.service.IntegralSetService;
 import org.ysh.p2p.service.impl.IntegralSetServiceImpl;
 import org.ysh.p2p.util.CacheUtil;
+import org.ysh.p2p.util.ViewUtil;
 import org.ysh.p2p.vo.IntegralSetDto;
 
 /**
@@ -161,6 +163,7 @@ class IntegralSetPanel extends JPanel{
 				dto.setInvestGiveIntegral(Integer.parseInt(investField.getText().trim()));
 				dto.setMaxInvestGiveIntegral(Integer.parseInt(investBigField.getText().trim()));
 				integralSetService.save(dto);
+				JOptionPane.showConfirmDialog(ViewUtil.getRootFrame(IntegralSetPanel.this), "操作成功!","提示",JOptionPane.CLOSED_OPTION);
 			}
 		});
 		

@@ -1,5 +1,6 @@
 package org.ysh.p2p.view.foreground;
 
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,8 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.ysh.p2p.model.Member;
 import org.ysh.p2p.service.SystemStartupService;
 import org.ysh.p2p.service.impl.SystemStartupServiceImpl;
+import org.ysh.p2p.session.Session;
 import org.ysh.p2p.util.ViewUtil;
 
 public class FrontMainFrame extends JFrame {
@@ -36,6 +40,7 @@ public class FrontMainFrame extends JFrame {
 		}
 		this.setVisible(true);
 		this.setSize(1366,800);
+		this.pack();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Image img = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/album1.png"));
 		setIconImage(img);
@@ -59,119 +64,162 @@ public class FrontMainFrame extends JFrame {
 
 		private static final long serialVersionUID = 6147720156260500362L;
 		
+		
+		private JPanel cardPanel = new JPanel();
+		
+		private CardLayout card = new CardLayout();
+		
+		private JPanel loginCardPanel = new JPanel();
+		
+		private CardLayout loginCard = new CardLayout();
+		
+		private JLabel loginNameLabel = new JLabel();
+		
 		public ContentPanel() throws IOException{
-			this.setLayout(null);
+			this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 			//顶部
 			JPanel p1= new JPanel();
 			
-			p1.setLayout(null);
+			p1.setLayout(new GridLayout(1,2));
 			
 			JPanel p1_left = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			p1_left.add(new JLabel("服务热线：400-828-1949"));
 			p1_left.add(new JLabel("QQ群号：205816335"));
 			p1_left.add(new JLabel("服务时间：9:00 - 18:00"));
-			p1_left.setBounds(40,0,643,40);
 			p1.add(p1_left);
 			
 			
-			JPanel p1_right=new JPanel(new FlowLayout(FlowLayout.RIGHT)); 
+			loginCardPanel.setLayout(loginCard);
 			
-			JButton loginLabel = new JButton("<html><a href='javascript:void(0);'>登录</a></html>");
-			p1_right.add(loginLabel);
-			loginLabel.addActionListener(new ActionListener() {
-				
-				public void actionPerformed(ActionEvent e) {
-					System.out.println("登录");
-					new MemberLoginDialog(FrontMainFrame.this);
-				}
-			});
+			loginCardPanel.add("beforeLogin",new BeforeLoginPanel());
+			loginCardPanel.add("afterLogin",new AfterLoginPanel());
 			
-			JButton personalLabel = new JButton("<html><a href='javascript:void(0);'>个人注册</a></html>");
-			p1_right.add(personalLabel);
+			loginCardPanel.setAlignmentX(LEFT_ALIGNMENT);
+			p1.add(loginCardPanel);
 			
-			personalLabel.addActionListener(new ActionListener() {
-				
-				public void actionPerformed(ActionEvent e) {
-					new PersonalRegisterDialog(FrontMainFrame.this); 
-					
-					//登录完成之后切换面板
-					
-					//TODO
-				}
-			});
-			
-			JButton enterpriselLabel = new JButton("<html><a href='javascript:void(0);'>企业注册</a></html>");
-			p1_right.add(enterpriselLabel);
-			
-			JButton helpLabel = new JButton("<html><a href='javascript:void(0);'>帮助中心</a></html>");
-			p1_right.add(helpLabel);
-			p1_right.setBounds(644, 0, 643, 40);
-			p1.add(p1_right);
-			
-			p1.setBounds(0,0,1366,40);
+			p1.setAlignmentX(LEFT_ALIGNMENT);
 			this.add(p1);
-			//中间部分，主要是图片
-			JLabel imgLabel = ViewUtil.makeImageLabel("/img/banner.jpg");
-			imgLabel.setBounds(0, 40, 1366, 287);
-			this.add(imgLabel);
+			
+			JPanel pIndex= new JPanel(new FlowLayout(FlowLayout.LEFT));
+			JPanel pIndex_left = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			pIndex_left.add(ViewUtil.makeImageLabel("/img/index2.png"));
+			pIndex_left.add(new JLabel("国资互联网文化金融综合服务平台"));
+			pIndex.add(pIndex_left);
 			
 			
-			//大数据部分
-			JPanel dataPart = new JPanel();
-			JPanel dataPart_left = new JPanel(new GridLayout(1,1));
-			JLabel dataImgLab1= ViewUtil.makeImageLabel("/img/dashuju.png");
-			dataPart_left.add(dataImgLab1);
-			dataPart.add(dataPart_left);
+			JPanel pIndex_right= new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			JButton indexBtn = new JButton("首页");
+			indexBtn.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					card.show(cardPanel, "index");	
+				}
+			});
+			pIndex_right.add(indexBtn);
 			
-			JPanel dataPart_right = new JPanel(new GridLayout(1,1));
-			dataPart_right.add(ViewUtil.makeImageLabel("/img/shouyi.png"));
-			dataPart.add(dataPart_right);
-			dataPart.setBounds(0,328,1366,350);
-			this.add(dataPart);
+			JButton investBtn = new JButton("我要投资");
+			pIndex_right.add(investBtn);
 			
-			JPanel dataPart2 = new JPanel();
-			dataPart2.setLayout(null);
-			JLabel jLabel1 = new JLabel("客观信用，改变中国",JLabel.CENTER);
-			jLabel1.setBounds(230,0,450,40);
-			dataPart2.add(jLabel1);
+			JButton bigDataBtn = new JButton("大数据介绍");
+			bigDataBtn.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					card.show(cardPanel, "bigData");
+				}
+			});
+			pIndex_right.add(bigDataBtn);
 			
-			JLabel jLabel2 = new JLabel("国内领先的大数据综合服务提供商",JLabel.CENTER);
-			jLabel2.setBounds(230,40,450,40);
-			dataPart2.add(jLabel2);
+			JButton infoBtn = new JButton("信息披露");
+			pIndex_right.add(infoBtn);
 			
-			JLabel jLabel3 = new JLabel("融资莫愁，投资莫愁",JLabel.CENTER);
-			jLabel3.setBounds(686,0,450,40);
-			dataPart2.add(jLabel3);
+			JButton accountBtn = new JButton("我的账户");
+			pIndex_right.add(accountBtn);
 			
-			JLabel jLabel4 = new JLabel("国资文化金融互联网借贷平台",JLabel.CENTER);
-			jLabel4.setBounds(686,40,450,40);
-			dataPart2.add(jLabel4);
+			pIndex_left.add(pIndex_right);
+			pIndex.setAlignmentX(LEFT_ALIGNMENT);
 			
-			dataPart2.setBounds(0,680,1366,80);
-			this.add(dataPart2);
+			this.add(pIndex);
 			
+			cardPanel.setLayout(card);
+			cardPanel.add("index",new IndexPanel());
+			cardPanel.add("bigData",new BigDataPanel());
+			cardPanel.setAlignmentX(LEFT_ALIGNMENT);
 			
-			//事件部分
-		/*	JPanel eventPart = new JPanel(new GridLayout(1,3));
-			JPanel eventPart1 = new JPanel(new GridLayout(2,1));
-			eventPart1.add(ViewUtil.makeImageLabel("/img/event1.png"));
-			eventPart1.add(new JLabel("关于我们"));
-			eventPart.add(eventPart1);
-			
-			JPanel eventPart2 = new JPanel(new GridLayout(2,1));
-			eventPart2.add(ViewUtil.makeImageLabel("/img/event2.png"));
-			eventPart2.add(new JLabel("媒体报道"));
-			eventPart.add(eventPart2);
-			
-			JPanel eventPart3 = new JPanel(new GridLayout(2,1));
-			eventPart3.add(ViewUtil.makeImageLabel("/img/event3.png"));
-			eventPart3.add(new JLabel("行业新闻"));
-			eventPart.add(eventPart3);
-			
-			this.add(eventPart)*/;
-			
-			
+			this.add(cardPanel);
 		}
 		
+		class BeforeLoginPanel extends JPanel
+		{
+			private static final long serialVersionUID = -6557802548180632816L;
+			
+			public BeforeLoginPanel(){
+				setLayout(new FlowLayout(FlowLayout.RIGHT)); 
+				JButton loginLabel = new JButton("<html><a href='javascript:void(0);'>登录</a></html>");
+				this.add(loginLabel);
+				loginLabel.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						new MemberLoginDialog(FrontMainFrame.this);
+						Member loginMember = Session.getInstance().getLoginMember();
+						if(loginMember != null){
+							loginNameLabel.setText("您好 ："+loginMember.getNickName());
+							loginCard.show(loginCardPanel, "afterLogin");
+						}
+					}
+				});
+				
+				JButton personalLabel = new JButton("<html><a href='javascript:void(0);'>个人注册</a></html>");
+				this.add(personalLabel);
+				
+				personalLabel.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						new PersonalRegisterDialog(FrontMainFrame.this); 
+						
+						//登录完成之后切换面板
+						
+						//TODO
+					}
+				});
+				
+				JButton enterpriselLabel = new JButton("<html><a href='javascript:void(0);'>企业注册</a></html>");
+				this.add(enterpriselLabel);
+				
+				JButton helpLabel = new JButton("<html><a href='javascript:void(0);'>帮助中心</a></html>");
+				this.add(helpLabel);
+			}
+		}
+		
+		class AfterLoginPanel extends JPanel{
+
+			private static final long serialVersionUID = 2942765142351670255L;
+			
+			public AfterLoginPanel(){
+				this.setLayout(new FlowLayout(FlowLayout.RIGHT));
+				JButton helpBtn = new JButton("帮助中心");
+				helpBtn.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
+				this.add(loginNameLabel);
+				
+				JButton exitBtn = new JButton("退出登录");
+				exitBtn.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						loginCard.show(loginCardPanel, "beforeLogin");
+						Session.getInstance().setLoginMember(null);
+					}
+				});
+				this.add(exitBtn);
+			}
+		}
 	}
+	
+	
+	
 }

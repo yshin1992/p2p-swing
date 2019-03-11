@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -274,6 +275,7 @@ public class DaoUtil {
 	
 	public <T> T queryForObject(String sql,Object[] params,Class<T> clazz) throws Exception{
 		Log.warning("SQL-->" + sql.toString());
+		Log.warning("Params-->" + Arrays.toString(params));
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
@@ -338,8 +340,6 @@ public class DaoUtil {
 		}
 		sql.deleteCharAt(sql.length()-1).append(") ");
 		
-		Log.warning("SQL-->" + sql.toString());
-		
 		this.update(sql.toString(), paramList.toArray());
 	}
 	
@@ -374,12 +374,14 @@ public class DaoUtil {
 		StringBuilder sql = new StringBuilder("update ").append(tab.name()).append(" set status=? where uuid=?");
 		
 		Log.warning("SQL-->" + sql.toString());
-		
-		this.update(sql.toString(), 
-				new Object[]{ReflectionUtil.getFieldValue("status", clazz, t),ReflectionUtil.getFieldValue("uuid", clazz, t)});
+		Object[] params = new Object[]{ReflectionUtil.getFieldValue("status", clazz, t),ReflectionUtil.getFieldValue("uuid", clazz, t)};
+		Log.warning("Params-->" + Arrays.toString(params));
+		this.update(sql.toString(), params);
 	}
 	
 	public void update(String sql,Object[] params) throws Exception{
+		Log.warning("SQL-->" + sql);
+		Log.warning("Params-->" + Arrays.toString(params));
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		try {

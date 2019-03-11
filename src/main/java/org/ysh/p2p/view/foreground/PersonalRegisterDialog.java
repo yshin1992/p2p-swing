@@ -179,10 +179,11 @@ public class PersonalRegisterDialog extends JDialog {
 			member.setPassword(password);
 			member.setEmail(email);
 			member.setPromotionId(inv);
+			member.setMemberKind(Member.MEMBER_KIND_PERSONAL);
 			try {
 				ResponseMsg<Member> msg = memberService.register(member);
 				if(msg.getCode() != ResponseMsg.SUCCESS_CODE){
-					JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  msg.getData(),"提示",JOptionPane.CLOSED_OPTION);
+					JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  msg.getExtras(),"提示",JOptionPane.CLOSED_OPTION);
 					return;
 				}else{
 					JOptionPane.showConfirmDialog(PersonalRegisterDialog.this,  "注册成功!","提示",JOptionPane.CLOSED_OPTION);

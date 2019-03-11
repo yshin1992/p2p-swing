@@ -43,6 +43,7 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 		}else{
 			Member checkMember = new Member();
 			checkMember.setPhone(member.getPhone());
+			checkMember.setStatus(null);
 			checkMember = memberDao.query(checkMember, Member.class);
 			if(null != checkMember){
 				respMsg.failure(null,"该手机号已经注册");
@@ -70,11 +71,12 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 			
 			Member promtion = new Member();
 			promtion.setPhone(member.getPromotionId());
-			
+			promtion.setStatus(null);
 			promtion = memberDao.query(promtion, Member.class);
-			if(member != null){
-				member.setMemberIdZ(member.getMemberIdZ());
+			if(promtion != null){
+				member.setMemberIdZ(promtion.getUuid());
 				//TODO 这里还要做发送红包的事务
+				
 			}
 			
 		}
@@ -140,7 +142,7 @@ public class MemberServiceImpl extends AbstractServiceImpl<Member> implements Me
 			}
 			
 			Date currentLoginTime = new Date();
-			Date lastLoginTime = member.getLastLogin();
+			Date lastLoginTime = loginMember.getLastLogin();
 			//设置上一次登录时间、ip
 			loginMember.setLastLogin(currentLoginTime);
 			loginMember.setLastLoginFrom(currentLoginTime);

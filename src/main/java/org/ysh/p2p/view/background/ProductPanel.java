@@ -3,19 +3,31 @@ package org.ysh.p2p.view.background;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FlowLayout;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import org.ysh.p2p.enums.ProductEnum;
+import org.ysh.p2p.util.CacheUtil;
+import org.ysh.p2p.view.DateChooserJButton;
+import org.ysh.p2p.vo.DropDownDto;
 
 /**
  * 项目管理
@@ -138,6 +150,100 @@ public class ProductPanel extends JPanel {
 	    addAButton("Long-Named Button 4", container);
 	    addAButton("5", container);
 	}
+	
+	class ContentPanel extends JPanel{
+		
+		private JTabbedPane pane = new JTabbedPane();
+		
+		private JTextField unitPriceF,quantityF,amountF,periodF,rateF,minTenderF,maxTenderF,minFullF,agreementNoF;
+		
+		private JComboBox<String> repayMethodF,periodTypeF,templateF,fundUseF,bussinessTypeF,kindF;
+		
+		private JTextField titleF,awardF;
+		
+		private JTextArea prdContentArea,fundUseArea,repaySourceArea;
+		
+		private DateChooserJButton groundBtn,investStartBtn,investEndBtn;
+		
+		private JRadioButton recommendYes,recommendNo,awardYes,awardNo;
+		
+		void initBaseInfoPanel(){
+			JPanel panel = new JPanel(new BoxLayout(this, BoxLayout.Y_AXIS));
+			
+			JLabel label1 = new JLabel("基础信息");
+			label1.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(label1);
+			
+			JPanel baseinfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			baseinfoPanel.add(new JLabel("*产品单价"));
+			unitPriceF = new JTextField(15);
+			baseinfoPanel.add(unitPriceF);
+			baseinfoPanel.add(new JLabel("元"));
+			
+			baseinfoPanel.add(new JLabel("*产品数量"));
+			quantityF = new JTextField(15);
+			baseinfoPanel.add(baseinfoPanel);
+			
+			baseinfoPanel.add(new JLabel("借款金额"));
+			amountF= new JTextField("0",15);
+			baseinfoPanel.add(amountF);
+			baseinfoPanel.add(new JLabel("元"));
+			
+			baseinfoPanel.add(new JLabel("*还款方式"));
+			List<DropDownDto> configList = CacheUtil.getConfigList(ProductEnum.REPAY_METHOD.getCode());
+			String[] repayMethods = new String[configList.size()-1];//剔除“全部”这一项
+			for(int i=0;i<repayMethods.length;i++){
+				if("全部".equals(configList.get(i).getAttrNm()))
+					continue;
+				repayMethods[i] = configList.get(i).getAttrNm();
+			}
+			repayMethodF = new JComboBox<String>(repayMethods);
+			baseinfoPanel.add(repayMethodF);
+			
+			baseinfoPanel.add(new JLabel("*借款期限"));
+			periodF = new JTextField(15);
+			baseinfoPanel.add(periodF);
+			
+			List<DropDownDto> periodList = CacheUtil.getConfigList(ProductEnum.PERIOD_TYPE.getCode());
+			String[] periodTypes = new String[periodList.size()-1];
+			for(int i=0;i<periodTypes.length;i++){
+				periodTypes[i] = periodList.get(i).getAttrNm();
+			}
+			periodTypeF = new JComboBox<String>(periodTypes);
+			baseinfoPanel.add(periodTypeF);
+			
+			baseinfoPanel.add(new JLabel("*年利率"));
+			rateF= new JTextField(15);
+			baseinfoPanel.add(rateF);
+			baseinfoPanel.add(new JLabel("%"));
+			baseinfoPanel.add(new JLabel("*最小投资数量"));
+			minTenderF = new JTextField(15);
+			baseinfoPanel.add(minTenderF);
+			baseinfoPanel.add(new JLabel("最大投资数量"));
+			maxTenderF = new JTextField(15);
+			baseinfoPanel.add(maxTenderF);
+			baseinfoPanel.add(new JLabel("最小满标数量"));
+			minFullF = new JTextField(15);
+			baseinfoPanel.add(minFullF);
+			baseinfoPanel.add(new JLabel("*合同编号"));
+			agreementNoF = new JTextField(15);
+			baseinfoPanel.add(agreementNoF);
+			baseinfoPanel.add(new JLabel("*合同模板"));
+			
+			
+			templateF = new JComboBox<String>();
+			baseinfoPanel.add();
+			baseinfoPanel.add();
+			baseinfoPanel.add();
+			
+			
+			
+			pane.add("基本信息",panel);
+			
+		}
+		
+	}
+	
 
 }
 

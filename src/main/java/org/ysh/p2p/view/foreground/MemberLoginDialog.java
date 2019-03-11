@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import org.ysh.p2p.model.Member;
 import org.ysh.p2p.service.MemberService;
 import org.ysh.p2p.service.impl.MemberServiceImpl;
+import org.ysh.p2p.session.Session;
 import org.ysh.p2p.util.StringUtil;
 import org.ysh.p2p.vo.ResponseMsg;
 
@@ -151,7 +152,7 @@ public class MemberLoginDialog extends JDialog {
 									pref.remove("remember");
 									pref.flush();
 								}
-								
+								Session.getInstance().setLoginMember(msg.getData());
 								JOptionPane.showConfirmDialog(MemberLoginDialog.this, "登录成功!","提示",JOptionPane.CLOSED_OPTION);
 								MemberLoginDialog.this.dispose();
 							}

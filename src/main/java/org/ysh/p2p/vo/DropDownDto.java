@@ -73,5 +73,12 @@ public class DropDownDto implements Serializable{
 	public void setDefaultVal(String defaultVal) {
 		this.defaultVal = defaultVal;
 	}
+
+	@Override
+	public String toString() {
+		return "DropDownDto [attrCd=" + attrCd + ", attrNm=" + attrNm
+				+ ", display=" + display + ", actualVal=" + actualVal
+				+ ", defaultVal=" + defaultVal + "]";
+	}
 	
 }

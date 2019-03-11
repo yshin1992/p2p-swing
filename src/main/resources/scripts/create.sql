@@ -1,14 +1,14 @@
 /** 系统管理员信息表 **/
 create table sys_user(
 uuid char(32) primary key,
-createTime timestamp not null,
-updateTime timestamp not null,
+createTime datetime not null,
+updateTime datetime not null,
 status int default 0,
 userCd varchar(32) unique,
 password char(32),
 email varchar(128),
 lastLoginIp varchar(32),
-lastLoginTime timestamp,
+lastLoginTime datetime,
 loginCounts int default 0,
 isAdmin int default 0) engine=InnoDB default charset=utf8;
 
@@ -97,8 +97,8 @@ CREATE TABLE `user_summary` (
 /** 浙商开户信息表 **/
 create table zsaccount(
 `uuid` char(32) primary key,
-`createTime` timestamp not null,
-`updateTime` timestamp not null,
+`createTime` datetime not null,
+`updateTime` datetime not null,
 `status` int default 0,
 `memberId` char(32) not null,
 `bindSerialNo` varchar(30) DEFAULT NULL,
@@ -137,3 +137,30 @@ CREATE TABLE `sysoperationlog` (
   PRIMARY KEY (`logId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `integralrecord` (
+  `recordId` varchar(32) NOT NULL,
+  `createBy` varchar(32) DEFAULT NULL,
+  `createTime` datetime DEFAULT NULL,
+  `amount` decimal(19,4) DEFAULT NULL,
+  `failureTime` datetime DEFAULT NULL,
+  `integralVal` int(11) DEFAULT NULL,
+  `isAddFlag` int(11) DEFAULT NULL,
+  `isPermanent` int(11) DEFAULT NULL,
+  `objId` varchar(32) DEFAULT NULL,
+  `objType` int(11) DEFAULT NULL,
+  `remark` varchar(200) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `memberId` varchar(32) NOT NULL,
+  PRIMARY KEY (`recordId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/** 合同模板 **/
+CREATE TABLE `contract_template` (
+  `templateId` varchar(32) NOT NULL,
+  `createBy` varchar(32) DEFAULT NULL,
+  `createTime` datetime DEFAULT NULL,
+  `templateName` varchar(255) DEFAULT NULL,
+  `templatePath` varchar(255) DEFAULT NULL,
+  `templatePdfPath` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`templateId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
