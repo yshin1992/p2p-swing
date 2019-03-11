@@ -17,7 +17,7 @@ public class CategoryDaoImpl extends AbstractDaoImpl<Category> implements Catego
 	public List<Category> findAll(){
 		List<Category> categoryList = new ArrayList<Category>();
 		String SQL="select a.attrId,a.createBy,a.createTime,a.effTime,a.expTime,a.listSort,a.state,a.stateTime,a.actualval,a.attrCd,a.attrNm,a.attrRequired,a.defaultVal,a.remark,a.categoryId,"
-				+ "c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId";
+				+ "c.categoryId,c.createTime,c.createBy,c.effTime,c.expTime,c.listSort,c.state,c.stateTime,c.categoryCd,c.categoryDesc,c.categoryNm,c.configed,c.edited,c.remark from categoryattr a,category c where a.state='F0A' and a.categoryId=c.categoryId order by c.categoryId";
 		Connection conn = null;
 		PreparedStatement pstm = null;
 		ResultSet rs = null;

@@ -4,9 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,6 +32,8 @@ import javax.swing.tree.TreePath;
 
 import org.ysh.p2p.enums.ProductEnum;
 import org.ysh.p2p.util.CacheUtil;
+import org.ysh.p2p.util.DateUtil;
+import org.ysh.p2p.util.StringUtil;
 import org.ysh.p2p.view.DateChooserJButton;
 import org.ysh.p2p.vo.DropDownDto;
 
@@ -109,7 +117,7 @@ public class ProductPanel extends JPanel {
 		
 		this.setLayout(new BorderLayout());
 		
-		contentPane = new JScrollPane(new JLabel("Hello"));
+		contentPane = new JScrollPane(new ContentPanel());
 		
 		pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,menutreePane,contentPane);
 		this.add(pane,BorderLayout.CENTER);
@@ -118,8 +126,8 @@ public class ProductPanel extends JPanel {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		JFrame frame = new JFrame();
-//		frame.add(new ProductPanel());
-		addComponentsToPane(frame.getContentPane());
+		frame.add(new ProductPanel());
+//		addComponentsToPane(frame.getContentPane());
 		frame.setSize(1366,700);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -152,7 +160,8 @@ public class ProductPanel extends JPanel {
 	}
 	
 	class ContentPanel extends JPanel{
-		
+		private static final long serialVersionUID = 4057204102567936921L;
+
 		private JTabbedPane pane = new JTabbedPane();
 		
 		private JTextField unitPriceF,quantityF,amountF,periodF,rateF,minTenderF,maxTenderF,minFullF,agreementNoF;
@@ -167,8 +176,12 @@ public class ProductPanel extends JPanel {
 		
 		private JRadioButton recommendYes,recommendNo,awardYes,awardNo;
 		
+		public ContentPanel(){
+			initBaseInfoPanel();
+		}
 		void initBaseInfoPanel(){
-			JPanel panel = new JPanel(new BoxLayout(this, BoxLayout.Y_AXIS));
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 			
 			JLabel label1 = new JLabel("基础信息");
 			label1.setAlignmentX(LEFT_ALIGNMENT);
@@ -182,66 +195,200 @@ public class ProductPanel extends JPanel {
 			
 			baseinfoPanel.add(new JLabel("*产品数量"));
 			quantityF = new JTextField(15);
-			baseinfoPanel.add(baseinfoPanel);
+			baseinfoPanel.add(quantityF);
 			
 			baseinfoPanel.add(new JLabel("借款金额"));
 			amountF= new JTextField("0",15);
 			baseinfoPanel.add(amountF);
 			baseinfoPanel.add(new JLabel("元"));
 			
-			baseinfoPanel.add(new JLabel("*还款方式"));
+			JPanel baseinfoPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			baseinfoPanel2.add(new JLabel("*还款方式"));
 			List<DropDownDto> configList = CacheUtil.getConfigList(ProductEnum.REPAY_METHOD.getCode());
-			String[] repayMethods = new String[configList.size()-1];//剔除“全部”这一项
-			for(int i=0;i<repayMethods.length;i++){
-				if("全部".equals(configList.get(i).getAttrNm()))
-					continue;
-				repayMethods[i] = configList.get(i).getAttrNm();
-			}
-			repayMethodF = new JComboBox<String>(repayMethods);
-			baseinfoPanel.add(repayMethodF);
+			System.out.println(Arrays.toString(configList.toArray()));
+			repayMethodF = initComboBox(configList);
+			baseinfoPanel2.add(repayMethodF);
 			
-			baseinfoPanel.add(new JLabel("*借款期限"));
+			baseinfoPanel2.add(new JLabel("*借款期限"));
 			periodF = new JTextField(15);
-			baseinfoPanel.add(periodF);
+			baseinfoPanel2.add(periodF);
 			
 			List<DropDownDto> periodList = CacheUtil.getConfigList(ProductEnum.PERIOD_TYPE.getCode());
-			String[] periodTypes = new String[periodList.size()-1];
-			for(int i=0;i<periodTypes.length;i++){
-				periodTypes[i] = periodList.get(i).getAttrNm();
-			}
-			periodTypeF = new JComboBox<String>(periodTypes);
-			baseinfoPanel.add(periodTypeF);
+			periodTypeF = initComboBox(periodList);
+			baseinfoPanel2.add(periodTypeF);
 			
-			baseinfoPanel.add(new JLabel("*年利率"));
+			baseinfoPanel2.add(new JLabel("*年利率"));
 			rateF= new JTextField(15);
-			baseinfoPanel.add(rateF);
-			baseinfoPanel.add(new JLabel("%"));
-			baseinfoPanel.add(new JLabel("*最小投资数量"));
+			baseinfoPanel2.add(rateF);
+			baseinfoPanel2.add(new JLabel("%"));
+			
+			JPanel baseinfoPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			baseinfoPanel3.add(new JLabel("*最小投资数量"));
 			minTenderF = new JTextField(15);
-			baseinfoPanel.add(minTenderF);
-			baseinfoPanel.add(new JLabel("最大投资数量"));
+			baseinfoPanel3.add(minTenderF);
+			baseinfoPanel3.add(new JLabel("最大投资数量"));
 			maxTenderF = new JTextField(15);
-			baseinfoPanel.add(maxTenderF);
-			baseinfoPanel.add(new JLabel("最小满标数量"));
+			baseinfoPanel3.add(maxTenderF);
+			baseinfoPanel3.add(new JLabel("最小满标数量"));
 			minFullF = new JTextField(15);
-			baseinfoPanel.add(minFullF);
-			baseinfoPanel.add(new JLabel("*合同编号"));
+			baseinfoPanel3.add(minFullF);
+			
+			JPanel baseinfoPanel4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			baseinfoPanel4.add(new JLabel("*合同编号"));
 			agreementNoF = new JTextField(15);
-			baseinfoPanel.add(agreementNoF);
-			baseinfoPanel.add(new JLabel("*合同模板"));
+			baseinfoPanel4.add(agreementNoF);
+			baseinfoPanel4.add(new JLabel("*合同模板"));
 			
 			
 			templateF = new JComboBox<String>();
-			baseinfoPanel.add();
-			baseinfoPanel.add();
-			baseinfoPanel.add();
+			baseinfoPanel4.add(templateF);
 			
+			baseinfoPanel4.add(new JLabel("*借款用途"));
+			List<DropDownDto> borrowUseList = CacheUtil.getConfigList(ProductEnum.BRROW_USE.getCode());
+			fundUseF = initComboBox(borrowUseList);
+			baseinfoPanel4.add(fundUseF);
 			
+			JPanel baseinfoPanel5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			baseinfoPanel5.add(new JLabel("*业务类型"));
+			List<DropDownDto> businessTypeList = CacheUtil.getConfigList(ProductEnum.BUSINESS_TYPE.getCode());
+			bussinessTypeF = initComboBox(businessTypeList);
+			baseinfoPanel5.add(bussinessTypeF);
+			baseinfoPanel5.add(new JLabel("*标种类型"));
+			List<DropDownDto> tendKindList = CacheUtil.getConfigList(ProductEnum.TENDER_KIND.getCode());
+			kindF = initComboBox(tendKindList);
+			baseinfoPanel5.add(kindF);
+			
+			baseinfoPanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(baseinfoPanel);
+			
+			baseinfoPanel2.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(baseinfoPanel2);
+			
+			baseinfoPanel3.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(baseinfoPanel3);
+			
+			baseinfoPanel4.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(baseinfoPanel4);
+			
+			baseinfoPanel5.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(baseinfoPanel5);
+			
+			JLabel label2= new JLabel("项目介绍");
+			label2.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(label2);
+			
+			JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			titlePanel.add(new JLabel("*标题"));
+			titleF = new JTextField(50);
+			titlePanel.add(titleF);
+			
+			titlePanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(titlePanel);
+			
+			JPanel prdCntPanel= new JPanel(new FlowLayout(FlowLayout.LEFT));
+			prdCntPanel.add(new JLabel("*项目简介"));
+			prdContentArea = new JTextArea(4,50);
+			prdCntPanel.add(new JScrollPane(prdContentArea));
+			prdCntPanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(prdCntPanel);
+			
+			JPanel borrowUsePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			borrowUsePanel.add(new JLabel("*资金用途"));
+			fundUseArea = new JTextArea(4,50);
+			borrowUsePanel.add(new JScrollPane(fundUseArea));
+			borrowUsePanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(borrowUsePanel);
+			
+			JPanel repaySourcePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			repaySourcePanel.add(new JLabel(" 还款来源"));
+			repaySourceArea = new JTextArea(4,50);
+			repaySourcePanel.add(new JScrollPane(repaySourceArea));
+			repaySourcePanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(repaySourcePanel);
+			
+			panel.add(new JLabel("其他信息"));
+			
+			JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			Date now = new Date();
+			groundBtn = new DateChooserJButton(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), DateUtil.defaultFormat(now));
+			timePanel.add(new JLabel("*申请上线时间"));
+			timePanel.add(groundBtn);
+			
+			investStartBtn = new DateChooserJButton(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), DateUtil.defaultFormat(now));
+			timePanel.add(new JLabel("*申请投标开始"));
+			timePanel.add(investStartBtn);
+			
+			investEndBtn = new DateChooserJButton(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), DateUtil.defaultFormat(DateUtil.addHours(now, 1)));
+			timePanel.add(new JLabel("*申请投标结束"));
+			timePanel.add(investEndBtn);
+			
+			timePanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(timePanel);
+			
+			JPanel awardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			ButtonGroup btnGroup1 =new ButtonGroup();
+			awardPanel.add(new JLabel("首页推荐"));
+			recommendNo = new JRadioButton("否",true);
+			btnGroup1.add(recommendNo);
+			recommendYes = new JRadioButton("是");
+			btnGroup1.add(recommendYes);
+			awardPanel.add(recommendNo);
+			awardPanel.add(recommendYes);
+			
+			awardPanel.add(new JLabel("投资奖励"));
+			ButtonGroup btnGroup2 = new ButtonGroup();
+			awardNo = new JRadioButton("否",true);
+			awardNo.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					awardF.setText("");
+					awardF.setEditable(false);
+				}
+			});
+			awardYes = new JRadioButton("是");
+			awardYes.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if(awardYes.isSelected()){
+						awardF.setEditable(true);
+					}
+				}
+			});
+			btnGroup2.add(awardNo);
+			btnGroup2.add(awardYes);
+			awardPanel.add(awardNo);
+			awardPanel.add(awardYes);
+			
+			awardPanel.add(new JLabel("奖励比例"));
+			awardF = new JTextField(15);
+			awardF.setEditable(false);
+			awardPanel.add(awardF);
+			awardPanel.add(new JLabel("%"));
+			
+			awardPanel.setAlignmentX(LEFT_ALIGNMENT);
+			panel.add(awardPanel);
 			
 			pane.add("基本信息",panel);
-			
+			this.add(pane);
 		}
 		
+		
+		private JComboBox<String> initComboBox(List<DropDownDto> dtoList){
+			if(StringUtil.isEmpty(dtoList)){
+				return new JComboBox<String>();
+			}
+			String[] items = new String[dtoList.size() -1];
+			int i=0;
+			for(DropDownDto dto : dtoList){
+				if("全部".equals(dto.getAttrNm()))
+					continue;
+				items[i++] = dto.getAttrNm();
+				System.out.println(dto.getAttrNm());
+			}
+			return new JComboBox<String>(items);
+		}
 	}
 	
 
