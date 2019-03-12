@@ -21,6 +21,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -274,7 +275,7 @@ class IntegralMgrPanel extends JPanel{
 	private static final long serialVersionUID = 6724963712418085692L;
 	
 	private JTextField keyWordF,startF,endF;
-	private JButton searchBtn,exportBtn;
+	private JButton searchBtn,exportBtn,detailBtn;
 	
 	private JLabel totalL,usedL,unUsedL,usedAmountL;
 	
@@ -284,6 +285,8 @@ class IntegralMgrPanel extends JPanel{
 	private JButton refreshBtn = new JButton("刷新");
 	private JTextField pageF=new JTextField("1",3);
 	private JButton goBtn = new JButton("Go");
+	private JButton preBtn = new JButton("上一页");
+	private JButton nextBtn = new JButton("下一页");
 	
 	private String keyword="";
 	private String queryStart="";
@@ -342,11 +345,22 @@ class IntegralMgrPanel extends JPanel{
 			
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
 		});
 		searchPanel.add(exportBtn);
 		
+		detailBtn=new JButton("查看详情");
+		detailBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int selectedRow = table.getSelectedRow();
+				System.out.println("selected ROW -->" + selectedRow);
+				MemberIntegral memberIntegral = pager.getRecords().get(selectedRow);
+				new IntegralRecordDialog(memberIntegral.getMember(), ViewUtil.getRootFrame(IntegralMgrPanel.this));
+			}
+		});
+		searchPanel.add(detailBtn);
 		searchPanel.setAlignmentX(LEFT_ALIGNMENT);
 		
 		this.add(searchPanel);
@@ -379,78 +393,76 @@ class IntegralMgrPanel extends JPanel{
 		recordCountL = new JLabel("共" +pager.getTotalCount()+" 条记录");
 		this.add(recordCountL);
 		setDataModel(tableModel, pager.getRecords(), pager.getFirstResult()+1);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.add(new JScrollPane(table));
 		
-		
+		initPagePanel();
+		pagerPanel.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(pagerPanel);
 	}
 	
-	private void initPagePanel(final int pageSize,final int totalCount,final int currentPage){
+	private void initPagePanel(){
+		for(int i=0;i< pageSizeCb.getItemCount();i++){
+			if(pageSizeCb.getItemAt(i).intValue()==pager.getpageSize().intValue()){
+				pageSizeCb.setSelectedIndex(i);
+				System.out.println("Selected index = " + i);
+				break;
+			}
+		}
 		pagerPanel.add(pageSizeCb);
 		refreshBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				Integer pageSize = (Integer) pageSizeCb.getSelectedItem();
+				PageRequest request = new PageRequest(1,pageSize);
+				pager = memberIntegralService.queryByPage(request, keyword, queryStart, queryEnd);
+				setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
 			}
 		});
 		pagerPanel.add(refreshBtn);
-		pagerPanel.add(new JLabel("共" +totalCount+" 条记录"));
-		final int pageCount = totalCount % pageSize == 0?totalCount/pageSize:(totalCount/pageSize+1);
-
-		if(pageCount <=5){
-			for(int i=0;i<pageCount;i++){
-				JButton tmpbtn = new JButton((i+1)+"");
-				if(i+1 == currentPage)
-					tmpbtn.setEnabled(false);
-				else{
-					tmpbtn.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							PageRequest request = new PageRequest();
-							pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
-							setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
-							initPagePanel(pageSize, totalCount, currentPage);
-						}
-					});
+		pagerPanel.add(new JLabel("共" +pager.getTotalCount()+" 条记录"));
+		preBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(pager.getCurrentPage()>1){
+					Integer pageSize = (Integer) pageSizeCb.getSelectedItem();
+					PageRequest request = new PageRequest(pager.getCurrentPage()-1,pageSize);
+					pager = memberIntegralService.queryByPage(request, keyword, queryStart, queryEnd);
+					setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
 				}
-				pagerPanel.add(tmpbtn);
 			}
-		}else{
-			if(currentPage <=3){
-				for(int i=0;i<=3;i++){
-					final JButton tmpbtn = new JButton((i+1)+"");
-					if(i+1 == currentPage)
-						tmpbtn.setEnabled(false);
-					else{
-						tmpbtn.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								//展示数据
-								pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
-								setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
-								initPagePanel(pageSize, totalCount, Integer.parseInt(tmpbtn.getText()));
-							}
-						});
-					}
-					pagerPanel.add(tmpbtn);
+		});
+		
+		nextBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(pager.getCurrentPage() < pager.getTotalPage()){
+					Integer pageSize = (Integer) pageSizeCb.getSelectedItem();
+					PageRequest request = new PageRequest(pager.getCurrentPage()+1,pageSize);
+					pager = memberIntegralService.queryByPage(request, keyword, queryStart, queryEnd);
+					setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
 				}
-				pagerPanel.add(new JLabel("..."));
-				JButton lastBtn = new JButton(pageCount+"");
-				lastBtn.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
-						setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
-						initPagePanel(pageSize, totalCount, pageCount);
-					}
-				});
-				pagerPanel.add(lastBtn);
-			}else{
-				int startIndex = currentPage-2;
-				
 			}
-		}
+		});
+		pagerPanel.add(preBtn);
+		pagerPanel.add(nextBtn);
+		pagerPanel.add(new JLabel("到第"));
+		pagerPanel.add(pageF);
+		pagerPanel.add(new JLabel("页"));
+		goBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Integer pageSize = (Integer) pageSizeCb.getSelectedItem();
+				PageRequest request = new PageRequest(Integer.parseInt(pageF.getText().trim()),pageSize);
+				pager = memberIntegralService.queryByPage(request, keyword, queryStart, queryEnd);
+				setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
+			}
+		});
 		
-		
+		pagerPanel.add(goBtn);
 	}
 	
 	private void setDataModel(DefaultTableModel model,List<MemberIntegral> records,int firstResult){

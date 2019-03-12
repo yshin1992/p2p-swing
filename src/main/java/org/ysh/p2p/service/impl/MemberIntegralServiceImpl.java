@@ -107,7 +107,7 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 				LogUtil.getLogger(this).warning("注册积分为"+regIntegral+",未获得积分");
 			}else{
 				integral.setIntegralVal(regIntegral+ integral.getIntegralVal());
-				integral.setTotal(regIntegral+integral.getIntegralVal());
+				integral.setTotal(regIntegral+integral.getTotal());
 				memberIntegralDao.update(integral, MemberIntegral.class);
 				
 				// 添加注册会员的获得积分记录

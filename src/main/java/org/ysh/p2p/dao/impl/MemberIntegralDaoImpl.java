@@ -26,14 +26,14 @@ public class MemberIntegralDaoImpl extends AbstractDaoImpl<MemberIntegral> imple
 	
 	public MemberIntegralTitleDto queryMemberIntegralTitle(String keyword,
 			String queryStart, String queryEnd) {
-		StringBuilder SQL = new StringBuilder("SELECT SUM(IFNULL(mi.integralVal,0)) AS effectiveValue");
-		SQL.append(",SUM(IFNULL(mi.usedAmount,0)) AS usedAmount");
-		SQL.append(",SUM(IFNULL(mi.usedValue,0)) AS usedValue");
-		SQL.append(",SUM(IFNULL(mi.total,0)) AS total");
+		StringBuilder SQL = new StringBuilder("SELECT IFNULL(SUM(IFNULL(mi.integralVal,0)),0) AS effectiveValue");
+		SQL.append(",IFNULL(SUM(IFNULL(mi.usedAmount,0)),0) AS usedAmount");
+		SQL.append(",IFNULL(SUM(IFNULL(mi.usedValue,0)),0) AS usedValue");
+		SQL.append(",IFNULL(SUM(IFNULL(mi.total,0)),0) AS total");
 		SQL.append(" FROM memberintegral mi inner join member m on m.uuid = mi.memberId WHERE 1=1 ");
 		List<String> paramList = new ArrayList<String>();
 		if(StringUtil.isNotEmpty(queryStart)){
-			SQL.append(" AND mi.update.updateTime >=?");
+			SQL.append(" AND mi.updateTime >=?");
 			paramList.add(queryStart+" 00:00:00");
 		}
 		if(StringUtil.isNotEmpty(queryEnd)){
@@ -86,7 +86,7 @@ public class MemberIntegralDaoImpl extends AbstractDaoImpl<MemberIntegral> imple
 		StringBuilder WhereSQL=new StringBuilder();
 		List<Object> paramList = new ArrayList<Object>();
 		if(StringUtil.isNotEmpty(queryStart)){
-			WhereSQL.append(" AND mi.update.updateTime >=?");
+			WhereSQL.append(" AND mi.updateTime >=?");
 			paramList.add(queryStart+" 00:00:00");
 		}
 		if(StringUtil.isNotEmpty(queryEnd)){

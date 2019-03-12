@@ -13,6 +13,8 @@ import org.ysh.p2p.model.Member;
 import org.ysh.p2p.service.IntegralRecordService;
 import org.ysh.p2p.util.LogUtil;
 import org.ysh.p2p.util.StringUtil;
+import org.ysh.p2p.vo.PageRequest;
+import org.ysh.p2p.vo.PageResponse;
 
 /**
  * 会员积分服务类实现
@@ -105,6 +107,18 @@ public class IntegralRecordServiceImpl extends AbstractServiceImpl<IntegralRecor
 				"会员[" + member.getRealCd() + "][" + (StringUtil.isNotEmpty(member.getRealNm()) ? member.getRealNm() : member.getPhone()) + "]",
 				"于" + member.getLastLoginFormat() + "登录获得积分");
 		sendIntegral(member, integralVal, IntegralRecordEnum.ISADDFLAG_ADD_1, remark, member.getUuid(), IntegralRecordEnum.OBJTYPE_LOGIN_1, null);		
+	}
+
+	public PageResponse<IntegralRecord> queryByPage(PageRequest pageRequest,
+			String memberId, String flag,String queryStart, String queryEnd) {
+		// TODO Auto-generated method stub
+		Integer addFlag = null;
+		if(IntegralRecordEnum.ISADDFLAG_ADD_1.getText().equals(flag)){
+			addFlag = Integer.parseInt(IntegralRecordEnum.ISADDFLAG_ADD_1.getKey());
+		}else if(IntegralRecordEnum.ISADDFLAG_SUB_0.getText().equals(flag)){
+			addFlag = Integer.parseInt(IntegralRecordEnum.ISADDFLAG_SUB_0.getKey());
+		}
+		return integralRecordDao.queryByPage(pageRequest, memberId,addFlag, queryStart, queryEnd);
 	}
 
 }

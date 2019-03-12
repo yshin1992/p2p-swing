@@ -12,7 +12,8 @@ public class PageRequest {
 	 public PageRequest() { this(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE); }
 	 
 	 public PageRequest(Integer currentPage, Integer pageSize){
-		 
+		 setCurrentPage(currentPage);
+		 setPageSize(pageSize);
 	 }
 	 
 	 public void setPageSize(Integer pageSize){
