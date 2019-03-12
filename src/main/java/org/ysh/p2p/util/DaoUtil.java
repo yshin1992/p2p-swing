@@ -185,6 +185,46 @@ public class DaoUtil {
 		}
 	}
 	
+	/**
+	 * 查询记录的总数，用于分页查询
+	 * @param SQL
+	 * @param params
+	 * @return
+	 */
+	public Long queryRecordCount(String SQL,Object[] params){
+		Log.warning("SQL-->" + SQL);
+		Log.warning("Params-->" + Arrays.toString(params));
+		
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		Long recordCount = 0L;
+		try {
+			conn=getConnection();
+			
+			pstm =conn.prepareStatement(SQL);
+			
+			if(null != params && params.length > 0){
+				for(int i=0;i<params.length;i++){
+					pstm.setObject(i+1, params[i]);
+				}
+			}
+			
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				recordCount = rs.getLong(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			closeResultSet(rs);
+			closeStatement(pstm);
+			closeConnection(conn);
+		}
+		return recordCount;
+	}
+	
 	public <T> T queryForObject(T t,Class<T> clazz) throws Exception{
 		Table tab = clazz.getAnnotation(Table.class);
 		StringBuilder sql = new StringBuilder("select * from ").append(tab.name()).append(" where 1=1 ");

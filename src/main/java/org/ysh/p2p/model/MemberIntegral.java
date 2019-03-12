@@ -1,6 +1,7 @@
 package org.ysh.p2p.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.ysh.p2p.annotation.Column;
 import org.ysh.p2p.annotation.Table;
@@ -89,6 +90,13 @@ public class MemberIntegral extends BaseModel {
 	public BigDecimal getUsedAmount() {
 		return usedAmount;
 	}
+	
+	public String getUsedAmountStr() {
+		if(null== this.usedAmount){
+			return "0.00";
+		}
+		return new DecimalFormat("#.##").format(usedAmount.doubleValue());
+	}
 	public void setUsedAmount(BigDecimal usedAmount) {
 		this.usedAmount = usedAmount;
 	}
@@ -98,6 +106,7 @@ public class MemberIntegral extends BaseModel {
 	public void setMaxInvestAmount(BigDecimal maxInvestAmount) {
 		this.maxInvestAmount = maxInvestAmount;
 	}
+	
 	@Override
 	public String toString() {
 		return "MemberIntegral [memberId=" + memberId + ", member=" + member

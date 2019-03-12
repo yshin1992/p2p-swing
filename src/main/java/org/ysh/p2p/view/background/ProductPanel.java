@@ -1,6 +1,7 @@
 package org.ysh.p2p.view.background;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -62,6 +63,11 @@ public class ProductPanel extends JPanel {
 	 * 内容面板
 	 */
 	private JScrollPane contentPane;
+	
+	/**
+	 * 新建项目和项目列表之间的cardLayout
+	 */
+	private CardLayout newPrdCard = new CardLayout();
 	
 	/**
 	 * 后期根据数据库读取用户权限
@@ -157,6 +163,20 @@ public class ProductPanel extends JPanel {
 	    addAButton("Button 3", container);
 	    addAButton("Long-Named Button 4", container);
 	    addAButton("5", container);
+	}
+	
+	class ListPanel extends JPanel{
+
+		private static final long serialVersionUID = -808736041217992349L;
+		
+		private JTabbedPane pane = new JTabbedPane();
+		
+		private JPanel undealPanel=new JPanel();
+		
+		private JPanel dealPanel = new JPanel();
+		
+		
+		
 	}
 	
 	class ContentPanel extends JPanel{

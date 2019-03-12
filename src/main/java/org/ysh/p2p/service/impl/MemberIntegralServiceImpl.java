@@ -15,6 +15,9 @@ import org.ysh.p2p.service.MemberIntegralService;
 import org.ysh.p2p.util.CacheUtil;
 import org.ysh.p2p.util.LogUtil;
 import org.ysh.p2p.util.StringUtil;
+import org.ysh.p2p.vo.MemberIntegralTitleDto;
+import org.ysh.p2p.vo.PageRequest;
+import org.ysh.p2p.vo.PageResponse;
 
 /**
  * 会员积分Service
@@ -104,6 +107,7 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 				LogUtil.getLogger(this).warning("注册积分为"+regIntegral+",未获得积分");
 			}else{
 				integral.setIntegralVal(regIntegral+ integral.getIntegralVal());
+				integral.setTotal(regIntegral+integral.getIntegralVal());
 				memberIntegralDao.update(integral, MemberIntegral.class);
 				
 				// 添加注册会员的获得积分记录
@@ -130,6 +134,7 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 					LogUtil.getLogger(this).warning("注册积分为"+regIntegral+",未获得积分");
 				}else{
 					recommendIntegral.setIntegralVal(recommendVal+ recommendIntegral.getIntegralVal());
+					recommendIntegral.setTotal(recommendVal+ recommendIntegral.getTotal());
 					memberIntegralDao.update(recommendIntegral, MemberIntegral.class);
 					
 					// 添加推荐好友的会员的获得积分记录
@@ -169,6 +174,7 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 					LogUtil.getLogger(this).warning("每日首次登录获得积分为"+regIntegral+",未获得积分");
 				}else{
 					integral.setIntegralVal(regIntegral+ integral.getIntegralVal());
+					integral.setTotal(regIntegral+ integral.getTotal());
 					memberIntegralDao.update(integral, MemberIntegral.class);
 					// 添加注册会员的获得积分记录
 					// 添加明细
@@ -180,6 +186,16 @@ public class MemberIntegralServiceImpl extends AbstractServiceImpl<MemberIntegra
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	public MemberIntegralTitleDto queryMemberIntegralTitleDto(String keyword,
+			String queryStart, String queryEnd) {
+		return memberIntegralDao.queryMemberIntegralTitle(keyword, queryStart, queryEnd);
+	}
+
+	public PageResponse<MemberIntegral> queryByPage(PageRequest pageRequest, String keyword,
+			String queryStart, String queryEnd) {
+		return memberIntegralDao.queryByPage(pageRequest, keyword, queryStart, queryEnd);
 	}
 
 }

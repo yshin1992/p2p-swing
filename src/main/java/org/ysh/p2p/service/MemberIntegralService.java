@@ -1,6 +1,9 @@
 package org.ysh.p2p.service;
 
 import org.ysh.p2p.model.MemberIntegral;
+import org.ysh.p2p.vo.MemberIntegralTitleDto;
+import org.ysh.p2p.vo.PageRequest;
+import org.ysh.p2p.vo.PageResponse;
 
 public interface MemberIntegralService extends AbstractService<MemberIntegral> {
 
@@ -23,4 +26,23 @@ public interface MemberIntegralService extends AbstractService<MemberIntegral> {
 	 * @param isFirstLoginInToday
 	 */
 	public void loginGiveIntegral(String memberId, boolean isFirstLoginInToday);
+	
+	/**
+	 * 查询积分管理的统计项
+	 * @param keyword
+	 * @param queryStart
+	 * @param queryEnd
+	 * @return
+	 */
+	public MemberIntegralTitleDto queryMemberIntegralTitleDto(String keyword,String queryStart,String queryEnd);
+	
+	/**
+	 * 积分管理页面分页查询
+	 * @param pageRequeset
+	 * @param keyword
+	 * @param queryStart
+	 * @param queryEnd
+	 * @return
+	 */
+	public PageResponse<MemberIntegral> queryByPage(PageRequest pageRequest,String keyword,String queryStart,String queryEnd);
 }

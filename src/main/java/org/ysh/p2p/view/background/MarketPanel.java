@@ -5,29 +5,41 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import org.ysh.p2p.enums.CategoryAttrEnum;
+import org.ysh.p2p.model.MemberIntegral;
 import org.ysh.p2p.service.IntegralSetService;
+import org.ysh.p2p.service.MemberIntegralService;
 import org.ysh.p2p.service.impl.IntegralSetServiceImpl;
+import org.ysh.p2p.service.impl.MemberIntegralServiceImpl;
 import org.ysh.p2p.util.CacheUtil;
+import org.ysh.p2p.util.DateUtil;
 import org.ysh.p2p.util.ViewUtil;
 import org.ysh.p2p.vo.IntegralSetDto;
+import org.ysh.p2p.vo.MemberIntegralTitleDto;
+import org.ysh.p2p.vo.PageRequest;
+import org.ysh.p2p.vo.PageResponse;
 
 /**
  * 营销管理Panel
@@ -86,6 +98,8 @@ public class MarketPanel extends JPanel {
 					
 					if("积分设置".equals(selectedNode.getUserObject())){
 						pane.setRightComponent(new IntegralSetPanel());
+					}else if("积分管理".equals(selectedNode.getUserObject())){
+						pane.setRightComponent(new IntegralMgrPanel());
 					}
 					
 				}
@@ -252,4 +266,209 @@ class IntegralSetPanel extends JPanel{
 						CategoryAttrEnum.INTEGRAL_MAXINVESTGIVEINTEGRAL.getAttrCd(), 0) + "");
 	}
 	
+}
+
+
+class IntegralMgrPanel extends JPanel{
+
+	private static final long serialVersionUID = 6724963712418085692L;
+	
+	private JTextField keyWordF,startF,endF;
+	private JButton searchBtn,exportBtn;
+	
+	private JLabel totalL,usedL,unUsedL,usedAmountL;
+	
+	private JLabel recordCountL;
+	private JPanel pagerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	private JComboBox<Integer> pageSizeCb = new JComboBox<Integer>(new Integer[]{1,5,10,20,30,40});
+	private JButton refreshBtn = new JButton("刷新");
+	private JTextField pageF=new JTextField("1",3);
+	private JButton goBtn = new JButton("Go");
+	
+	private String keyword="";
+	private String queryStart="";
+	private String queryEnd="";
+	
+	private String[] tableHead={
+			"序号","会员账号","会员昵称","会员姓名","积分获得总量","已使用积分数","未使用积分数","已使用积分面值（元）","最后更新时间"	
+		};
+	
+	private DefaultTableModel tableModel = new DefaultTableModel(tableHead, 0);
+	
+	private JTable table = new JTable(tableModel);
+	
+	private MemberIntegralService memberIntegralService  = new MemberIntegralServiceImpl();
+	
+	private PageResponse<MemberIntegral> pager = null;
+	
+	public IntegralMgrPanel(){
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		this.add(new JLabel("会员积分管理"));
+		
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		
+		searchPanel.add(new JLabel("搜索"));
+		keyWordF = new JTextField(15);
+		searchPanel.add(keyWordF);
+		searchPanel.add(new JLabel("更新日期"));
+		startF=new JTextField(15);
+		searchPanel.add(startF);
+		searchPanel.add(new JLabel("到"));
+		endF=new JTextField(15);
+		searchPanel.add(endF);
+		
+		searchBtn = new JButton("查询");
+		searchBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				keyword = keyWordF.getText().trim();
+				queryStart = startF.getText().trim();
+				queryEnd = endF.getText().trim();
+				MemberIntegralTitleDto titleDto = memberIntegralService.queryMemberIntegralTitleDto(keyword, queryStart, queryEnd);
+				totalL.setText(titleDto.getTotalValue().toString());
+				usedL.setText(titleDto.getUsedValue().toString());
+				unUsedL.setText(titleDto.getEffectiveValue().toString());
+				usedAmountL.setText(titleDto.getUsedAmountStr());
+				pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
+				setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
+				
+			}
+		});
+		searchPanel.add(searchBtn);
+		exportBtn = new JButton("导出");
+		exportBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		searchPanel.add(exportBtn);
+		
+		searchPanel.setAlignmentX(LEFT_ALIGNMENT);
+		
+		this.add(searchPanel);
+		
+		MemberIntegralTitleDto titleDto = memberIntegralService.queryMemberIntegralTitleDto(null, null, null);
+		
+		JPanel descPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 0));
+		descPanel.add(new JLabel("总积分数:"));
+		totalL = new JLabel(titleDto.getTotalValue().toString());
+		descPanel.add(totalL);
+		
+		descPanel.add(new JLabel("已使用总积分数:"));
+		usedL = new JLabel(titleDto.getUsedValue().toString());
+		descPanel.add(usedL);
+		
+		descPanel.add(new JLabel("未使用总积分数:"));
+		unUsedL = new JLabel(titleDto.getEffectiveValue().toString());
+		descPanel.add(unUsedL);
+		
+		descPanel.add(new JLabel("已使用积分总面值(元):"));
+		usedAmountL = new JLabel(titleDto.getUsedAmountStr());
+		descPanel.add(usedAmountL);
+		
+		descPanel.setAlignmentX(LEFT_ALIGNMENT);
+		
+		this.add(descPanel);
+		
+		this.pager = memberIntegralService.queryByPage(new PageRequest(), null, null, null);
+		
+		recordCountL = new JLabel("共" +pager.getTotalCount()+" 条记录");
+		this.add(recordCountL);
+		setDataModel(tableModel, pager.getRecords(), pager.getFirstResult()+1);
+		this.add(new JScrollPane(table));
+		
+		
+	}
+	
+	private void initPagePanel(final int pageSize,final int totalCount,final int currentPage){
+		pagerPanel.add(pageSizeCb);
+		refreshBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		pagerPanel.add(refreshBtn);
+		pagerPanel.add(new JLabel("共" +totalCount+" 条记录"));
+		final int pageCount = totalCount % pageSize == 0?totalCount/pageSize:(totalCount/pageSize+1);
+
+		if(pageCount <=5){
+			for(int i=0;i<pageCount;i++){
+				JButton tmpbtn = new JButton((i+1)+"");
+				if(i+1 == currentPage)
+					tmpbtn.setEnabled(false);
+				else{
+					tmpbtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							PageRequest request = new PageRequest();
+							pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
+							setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
+							initPagePanel(pageSize, totalCount, currentPage);
+						}
+					});
+				}
+				pagerPanel.add(tmpbtn);
+			}
+		}else{
+			if(currentPage <=3){
+				for(int i=0;i<=3;i++){
+					final JButton tmpbtn = new JButton((i+1)+"");
+					if(i+1 == currentPage)
+						tmpbtn.setEnabled(false);
+					else{
+						tmpbtn.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								//展示数据
+								pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
+								setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
+								initPagePanel(pageSize, totalCount, Integer.parseInt(tmpbtn.getText()));
+							}
+						});
+					}
+					pagerPanel.add(tmpbtn);
+				}
+				pagerPanel.add(new JLabel("..."));
+				JButton lastBtn = new JButton(pageCount+"");
+				lastBtn.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						pager = memberIntegralService.queryByPage(new PageRequest(), keyword, queryStart, queryEnd);
+						setDataModel(tableModel,pager.getRecords(),pager.getFirstResult()+1);
+						initPagePanel(pageSize, totalCount, pageCount);
+					}
+				});
+				pagerPanel.add(lastBtn);
+			}else{
+				int startIndex = currentPage-2;
+				
+			}
+		}
+		
+		
+	}
+	
+	private void setDataModel(DefaultTableModel model,List<MemberIntegral> records,int firstResult){
+		model.setRowCount(0);//清空原有数据
+		int i=0;
+		for(MemberIntegral mi:records){
+			Vector<Object> row = new Vector<Object>();
+			row.add(firstResult+i);
+			row.add(mi.getMember().getRealCd());
+			row.add(mi.getMember().getNickName());
+			row.add(mi.getMember().getRealNm());
+			row.add(mi.getTotal());
+			row.add(mi.getUsedValue());
+			row.add(mi.getIntegralVal());
+			row.add(mi.getUsedAmountStr());
+			row.add(DateUtil.defaultFormat(mi.getUpdateTime()));
+			model.addRow(row);
+			i++;
+		}
+	}
 }

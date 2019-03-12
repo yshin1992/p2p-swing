@@ -30,6 +30,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.ysh.p2p.util.StringUtil;
+
 public class DateChooserJButton extends JButton {
 
 	/**
@@ -51,7 +53,7 @@ public class DateChooserJButton extends JButton {
 		// 保存原始是日期时间
 		initOriginalText(dateString);
 	}
-
+	
 	public DateChooserJButton(SimpleDateFormat df, String dateString) {
 		this();
 		setText(df, dateString);
@@ -94,6 +96,7 @@ public class DateChooserJButton extends JButton {
 				Point p = getLocationOnScreen();
 				p.y = p.y + 30;
 				dateChooser.showDateChooser(p);
+				
 			}
 		});
 	}
@@ -574,10 +577,19 @@ public class DateChooserJButton extends JButton {
 		mainFrame.setSize(300, 300);
 		mainFrame.setLayout(new java.awt.BorderLayout());
 		// 根据格式设置内容yyyy/MM/dd HH
-		mainFrame.add(new DateChooserJButton(new SimpleDateFormat(
-				"yyyy/MM/dd HH:mm:ss"), "2012/12/12 22:10:10"),
+		final DateChooserJButton dateChooserJButton = new DateChooserJButton(new SimpleDateFormat(
+				"yyyy/MM/dd HH:mm:ss"), "2012/12/12 22:10:10");
+		mainFrame.add(dateChooserJButton,
 				java.awt.BorderLayout.CENTER);
-
+		JButton testBtn = new JButton("TEST");
+		testBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println(dateChooserJButton.getDate());
+			}
+		});
+		mainFrame.add(testBtn,BorderLayout.SOUTH);
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = kit.getScreenSize();
 		int width = (int) screenSize.getWidth();
