@@ -103,10 +103,16 @@ public class Product extends BaseModel{
 	@Column(name="unitPrice")
 	private BigDecimal unitPrice;
 	
-	@Column(name="份数")
+	/**
+	 * 份数
+	 */
+	@Column(name="quantity")
 	private Long quantity;
 	
-	@Column(name="已投份数")
+	/**
+	 * 已投份数
+	 */
+	@Column(name="castQuantity")
 	private Long castQuantity;
 	
 	/**
@@ -863,4 +869,40 @@ public class Product extends BaseModel{
 
 		return "";
 	}
+
+
+	@Override
+	public String toString() {
+		return "Product [productCd=" + productCd + ", productNm=" + productNm
+				+ ", rate=" + rate + ", period=" + period + ", periodType="
+				+ periodType + ", unitPrice=" + unitPrice + ", quantity="
+				+ quantity + ", castQuantity=" + castQuantity
+				+ ", minTenderQuantity=" + minTenderQuantity
+				+ ", maxTenderQuantity=" + maxTenderQuantity
+				+ ", minFullQuantity=" + minFullQuantity + ", groundTime="
+				+ groundTime + ", tenderStart=" + tenderStart + ", tenderEnd="
+				+ tenderEnd + ", contractEffTime=" + contractEffTime
+				+ ", fullScaleTime=" + fullScaleTime + ", interestStartTime="
+				+ interestStartTime + ", borrowUse=" + borrowUse
+				+ ", borrowUseName=" + borrowUseName + ", repayMethod="
+				+ repayMethod + ", tenderKind=" + tenderKind
+				+ ", tenderKindName=" + tenderKindName + ", businessType="
+				+ businessType + ", businessTypeNm=" + businessTypeNm
+				+ ", memberId=" + memberId + ", member=" + member
+				+ ", safeguard=" + safeguard + ", productContent="
+				+ productContent + ", repaySource=" + repaySource
+				+ ", fundUse=" + fundUse + ", minHoldDay=" + minHoldDay
+				+ ", canAutobid=" + canAutobid + ", awardRate=" + awardRate
+				+ ", awardAmount=" + awardAmount + ", awardTotal=" + awardTotal
+				+ ", awardFail=" + awardFail + ", amount=" + amount
+				+ ", compensatory=" + compensatory + ", compenInterest="
+				+ compenInterest + ", interestAlgorithm=" + interestAlgorithm
+				+ ", loanStatus=" + loanStatus + ", isGenerationRepayItemPlan="
+				+ isGenerationRepayItemPlan + ", homeRecomment="
+				+ homeRecomment + ", productAuthInfos=" + productAuthInfos
+				+ ", attachments=" + attachments + ", productPledges="
+				+ productPledges + "]";
+	}
+	
+	
 }

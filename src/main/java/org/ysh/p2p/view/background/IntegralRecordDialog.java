@@ -180,7 +180,7 @@ public class IntegralRecordDialog extends JDialog {
 		int i=0;
 		for(IntegralRecord mi:records){
 			Vector<Object> row = new Vector<Object>();
-			row.add(firstResult+1+i);
+			row.add(firstResult+i);
 			row.add(mi.getIntegralVal());
 			row.add(mi.getAmount());
 			row.add(getObjTypeNm(mi.getObjType()+""));

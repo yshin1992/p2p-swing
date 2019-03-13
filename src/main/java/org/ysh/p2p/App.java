@@ -21,8 +21,8 @@ public class App
 			
 			public void run() {
 				// TODO Auto-generated method stub
-				new FrontMainFrame();
-//				new MainFrame();
+//				new FrontMainFrame();
+				new MainFrame();
 			}
 		});
 		

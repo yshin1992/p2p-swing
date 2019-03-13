@@ -112,11 +112,8 @@ public class MarketPanel extends JPanel {
 	public MarketPanel(){
 		
 		initMenuTreePane();
-		
 		this.setLayout(new BorderLayout());
-		
 		contentPane = new JScrollPane(new JLabel("Hello"));
-		
 		pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,menutreePane,contentPane);
 		
 		this.add(pane,BorderLayout.CENTER);
@@ -356,6 +353,8 @@ class IntegralMgrPanel extends JPanel{
 				// TODO Auto-generated method stub
 				int selectedRow = table.getSelectedRow();
 				System.out.println("selected ROW -->" + selectedRow);
+				if(selectedRow <0)
+					return;
 				MemberIntegral memberIntegral = pager.getRecords().get(selectedRow);
 				new IntegralRecordDialog(memberIntegral.getMember(), ViewUtil.getRootFrame(IntegralMgrPanel.this));
 			}
