@@ -15,6 +15,18 @@ public class ItemType implements Serializable {
 
 	private static final long serialVersionUID = -2060225845428353377L;
 
+	public static final String ITEM_TYPE_CODE_CAPITAL = "100000";// 本金
+	public static final String ITEM_TYPE_CODE_INVEST = "100100";// 投资
+	public static final String ITEM_TYPE_CODE_TRANSFER = "100200";// 债权转让
+	public static final String ITEM_TYPE_CODE_RECHARGE = "100300";// 充值
+	public static final String ITEM_TYPE_CODE_WITHDRAWALS = "100400";// 提现 
+	public static final String ITEM_TYPE_CODE_LOAN = "100500";// 借款（放款）
+	public static final String ITEM_TYPE_CODE_REPAY = "100600";// 还款
+	public static final String ITEM_TYPE_CODE_RECEIVABLE = "100700";// 收款
+	public static final String ITEM_TYPE_CODE_INTEREST = "100800";// 利息
+	public static final String ITEM_TYPE_CODE_OVERDUE_INTEREST = "200000";// 逾期利息
+	
+	
 	@Column(name="createTime")
 	private Date createTime;
 	

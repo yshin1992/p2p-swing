@@ -147,7 +147,6 @@ public class FeeItemPanel extends JPanel {
 			for(int i=0;i< pageSizeCb.getItemCount();i++){
 				if(pageSizeCb.getItemAt(i).intValue()==pager.getpageSize().intValue()){
 					pageSizeCb.setSelectedIndex(i);
-					System.out.println("Selected index = " + i);
 					break;
 				}
 			}
@@ -217,7 +216,7 @@ public class FeeItemPanel extends JPanel {
 				row.add(mi.getNodeName());
 				row.add(mi.getRateReferenedNm());
 				row.add(mi.getRateP());
-				row.add(StringUtil.isEmpty(mi.getPeriodOrDay())?"否":"是");
+				row.add(mi.getPeriodOrDay() == 0 ?"否":"是");
 				if(StringUtil.isEmpty(mi.getMaxAmount()) || mi.getMaxAmount().compareTo(BigDecimal.ZERO)<=0){
 					row.add("不限");
 				}else{
